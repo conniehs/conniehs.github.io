@@ -1,0 +1,3851 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VE2D Supplementary Package for Online Research Skills</title>
+    <script src="asset/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="asset/html-docx-js/dist/html-docx.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #2c3e50;
+            --background-color: #ffffff;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --nav-primary: #1e3a8a;
+            --nav-active: #3b82f6;
+            --professional-blue: #264653;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            min-height: 100vh;
+        }
+
+        .main-title {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 20px;
+        }
+
+        .page-navigation {
+            background-color: var(--light-gray);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .page-nav-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            max-width: 100%;
+        }
+
+        .page-btn {
+            background-color: var(--nav-primary);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            min-width: 50px;
+            flex: 0 0 auto;
+        }
+
+        .page-btn:hover {
+            background-color: var(--nav-active);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .page-btn.active {
+            background-color: var(--nav-active);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+       
+        button.highlight-btn {
+            margin: 1em 0;
+            padding: 0.5em 1em;
+            font-size: 1em;
+            background-color: var(--secondary-color);
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button.highlight-btn:hover {
+            background-color: var(--nav-active);
+        }
+
+        mark {
+            background-color: yellow;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-header {
+            color: var(--professional-blue);
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-header::before {
+            font-size: 0.8em;
+            color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-header.basic-search::before { content: '🔍'; }
+        .page-header.refining-search::before { content: '🎯'; }
+        .page-header.quotation-marks::before { content: '"'; font-weight: bold; font-size: 1.2em; }
+        .page-header.minus-sign::before { content: '−'; font-weight: bold; font-size: 1.2em; }
+        .page-header.or-search::before { content: 'OR'; font-weight: bold; font-size: 0.6em; }
+        .page-header.site-specific::before { content: '🌐'; }
+        .page-header.file-type::before { content: '📄'; }
+        .page-header.evaluating::before { content: '🛡️'; }
+        .page-header.multiple-sources::before { content: '🔗'; }
+        .page-header.search-results::before { content: '📊'; }
+        .page-header.advanced::before { content: '⚙️'; }
+        .page-header.scholar::before { content: '🎓'; }
+        .page-header.organizing::before { content: '📋'; }
+        .page-header.ai-answers::before { content: '🤖'; }
+        .page-header.paraphrasing::before { content: '✍️'; }
+        .page-header.summary::before { content: '🎉'; }
+        .page-header.references::before { content: '📚'; }
+
+        .content-section {
+            background-color: var(--light-gray);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--professional-blue);
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '▶';
+            color: var(--secondary-color);
+            font-size: 0.8em;
+        }
+
+        .practice-section {
+            background-color: #fff7e6;
+            border: 2px solid var(--warning-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .practice-title {
+            color: var(--warning-color);
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .practice-title::before {
+            content: '✓';
+            background-color: var(--warning-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .question {
+            background-color: var(--background-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .answer-option {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background-color: var(--light-gray);
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .answer-option:hover {
+            background-color: #e3f2fd;
+            border-color: var(--secondary-color);
+        }
+
+        .answer-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .answer-option.correct {
+            background-color: #e8f5e8;
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .answer-option.incorrect {
+            background-color: #ffeaea;
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #e8f5e8;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .feedback.incorrect {
+            background-color: #ffeaea;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .google-search-link {
+            display: inline-block;
+            background-color: #4285f4;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .google-search-link:hover {
+            background-color: #3367d6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-decoration: none;
+        }
+
+        .google-search-link::before {
+            content: '🔍 ';
+        }
+
+        .fill-blank {
+            display: inline-block;
+            border: none;
+            border-bottom: 2px solid var(--secondary-color);
+            padding: 5px 10px;
+            margin: 0 5px;
+            font-size: inherit;
+            background-color: transparent;
+            min-width: 100px;
+        }
+
+        .fill-blank:focus {
+            outline: none;
+            border-bottom-color: var(--primary-color);
+            background-color: #f0f8ff;
+        }
+
+        .check-answer-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .check-answer-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .example-box {
+            background-color: #f0f8ff;
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .example-title {
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .important-note {
+            background-color: #fff3cd;
+            border: 1px solid var(--warning-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid var(--warning-color);
+        }
+
+        .paraphrase-exercise {
+            background-color: #f0f8ff;
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .paraphrase-title {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .paraphrase-title::before {
+            content: '✍️';
+            font-size: 1.2em;
+        }
+
+        .original-text {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .original-label {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .video-section {
+            background-color: #f8f9fa;
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .video-title {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .video-title::before {
+            content: '📹';
+            font-size: 1.2em;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            margin: 15px 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .nav-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nav-btn.prev::before {
+            content: '←';
+        }
+
+        .nav-btn.next::after {
+            content: '→';
+        }
+
+        .nav-btn.arrow-only {
+            padding: 12px 20px;
+            font-size: 20px;
+        }
+
+        .nav-btn.arrow-only::after {
+            content: '→';
+            margin: 0;
+        }
+
+        .congratulations-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .congratulations-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .congratulations-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .skill-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .skill-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .skill-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .branding {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .branding:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .branding svg {
+            height: 1.2em;
+            margin-left: 8px;
+            vertical-align: middle;
+            transition: all 0.3s ease;
+        }
+
+        .ordered-list {
+            counter-reset: item;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .ordered-list li {
+            counter-increment: item;
+            margin-bottom: 15px;
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .ordered-list li::before {
+            content: counter(item);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--secondary-color);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .bullet-list li {
+            padding-left: 30px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .bullet-list li::before {
+            content: '•';
+            color: var(--secondary-color);
+            font-size: 20px;
+            position: absolute;
+            left: 10px;
+            top: -2px;
+        }
+
+        .reference-item {
+            background-color: var(--background-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid var(--secondary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .reference-category {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .reference-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Notes Section Styles */
+        .notes-section {
+            background-color: #f8f9fa;
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .notes-title {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notes-title::before {
+            content: '📝';
+            font-size: 1.2em;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: vertical;
+            background-color: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .notes-textarea::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .notes-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            gap: 15px;
+        }
+
+        .notes-save-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notes-save-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .notes-save-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .notes-save-btn::before {
+            content: '💾';
+        }
+
+        .notes-clear-btn {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notes-clear-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .notes-clear-btn::before {
+            content: '🗑️';
+        }
+
+        .notes-status {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notes-status.show {
+            opacity: 1;
+        }
+
+        .notes-status.success {
+            color: var(--success-color);
+        }
+
+        .notes-status.error {
+            color: var(--accent-color);
+        }
+
+        .notes-word-count {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Enhanced Drag and Drop Summary Activity Styles */
+        .drag-drop-container {
+            background-color: #f8f9fa;
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .drag-drop-title {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .drag-drop-title::before {
+            content: '🎯';
+            font-size: 1.2em;
+        }
+
+        /* 3x3 Grid Layout for Questions */
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .drag-drop-question {
+            background-color: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            min-height: 120px;
+        }
+
+        .drag-drop-question-text {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        .drop-zone {
+            min-height: 35px;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            padding: 8px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-style: italic;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--secondary-color);
+            background-color: #e3f2fd;
+        }
+
+        .drop-zone.has-answer {
+            border-color: var(--success-color);
+            background-color: #e8f5e8;
+            color: var(--success-color);
+            font-style: normal;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .drop-zone.incorrect {
+            border-color: var(--accent-color);
+            background-color: #ffeaea;
+            color: var(--accent-color);
+        }
+
+        /* Compact Drag Options Layout */
+        .drag-options-section {
+            background-color: white;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .drag-options-title {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .drag-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .drag-item {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: grab;
+            border: 2px solid transparent;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            user-select: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 35px;
+        }
+
+        .drag-item:hover {
+            background-color: #bbdefb;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .drag-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .drag-item.used {
+            background-color: #e8f5e8;
+            color: var(--success-color);
+            cursor: default;
+            border-color: var(--success-color);
+        }
+
+        .drag-item.incorrect {
+            background-color: #ffeaea;
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .activity-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .reset-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .check-answers-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-answers-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .check-answers-btn::before {
+            content: '✓';
+        }
+
+        .score-display {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-align: center;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            border: 1px solid var(--secondary-color);
+            margin-top: 20px;
+        }
+
+        .activity-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+            text-align: center;
+        }
+
+        .activity-feedback.show {
+            display: block;
+        }
+
+        .activity-feedback.excellent {
+            background-color: #e8f5e8;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .activity-feedback.good {
+            background-color: #fff3cd;
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .activity-feedback.needs-improvement {
+            background-color: #ffeaea;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        /* Restart Book Button Styles */
+        .restart-book-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .restart-book-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .restart-book-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .restart-book-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .restart-book-btn:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .restart-book-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .restart-book-btn.restarting {
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .restart-book-btn.restarting::before {
+            content: '⏳';
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .restart-confirmation {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .restart-confirmation h4 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .restart-confirmation ul {
+            text-align: left;
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .restart-confirmation ul li {
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 1024px) {
+            .questions-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .drag-options {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .drag-item {
+                font-size: 12px;
+                padding: 6px 8px;
+                min-height: 32px;
+            }
+
+            .drag-drop-question {
+                min-height: 110px;
+                padding: 12px;
+            }
+
+            .drag-drop-question-text {
+                font-size: 13px;
+            }
+
+            .drop-zone {
+                min-height: 30px;
+                font-size: 11px;
+                padding: 6px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px 20px;
+            }
+            
+            .page-title, .main-title {
+                font-size: 2em;
+            }
+            
+            .page-header {
+                font-size: 1.5em;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .page-nav-grid {
+                gap: 6px;
+            }
+
+            .page-btn {
+                padding: 10px 12px;
+                font-size: 14px;
+                min-width: 45px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .congratulations-title {
+                font-size: 2em;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .notes-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .notes-save-btn, .notes-clear-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .activity-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .reset-btn, .check-answers-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .questions-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .drag-options {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .drag-item {
+                font-size: 11px;
+                padding: 6px 8px;
+                min-height: 30px;
+            }
+
+            .drag-drop-question {
+                min-height: 100px;
+                padding: 12px;
+            }
+
+            .drag-drop-question-text {
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+
+            .drop-zone {
+                min-height: 28px;
+                font-size: 10px;
+                padding: 5px;
+            }
+
+            .drop-zone.has-answer {
+                font-size: 11px;
+            }
+
+            .restart-book-title {
+                font-size: 1.5em;
+            }
+
+            .restart-book-btn {
+                font-size: 16px;
+                padding: 12px 24px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media print {
+            .page-navigation, .navigation-buttons, .notes-section, .restart-book-section {
+                display: none !important;
+            }
+            
+            .page {
+                display: block !important;
+                page-break-after: always;
+            }
+            
+            .page:last-child {
+                page-break-after: avoid;
+            }
+            
+            body {
+                font-size: 12pt;
+                line-height: 1.4;
+            }
+            
+            .page-title,
+            .page-header {
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+  <header>
+    <img src="Banner.jpg" alt="Course Banner" style="width:100%; height:auto; display:block;">
+  </header>
+        
+    <!-- Highlight Button -->
+    <button class="highlight-btn" onclick="highlightSelection()">Highlight Selection</button>
+    <button class="highlight-btn" onclick="clearHighlights()">Clear Highlights</button>
+
+        <div class="page-navigation">
+            <div class="page-nav-grid">
+                <button class="page-btn active" onclick="showPage(1)">1</button>
+                <button class="page-btn" onclick="showPage(2)">2</button>
+                <button class="page-btn" onclick="showPage(3)">3</button>
+                <button class="page-btn" onclick="showPage(4)">4</button>
+                <button class="page-btn" onclick="showPage(5)">5</button>
+                <button class="page-btn" onclick="showPage(6)">6</button>
+                <button class="page-btn" onclick="showPage(7)">7</button>
+                <button class="page-btn" onclick="showPage(8)">8</button>
+                <button class="page-btn" onclick="showPage(9)">9</button>
+                <button class="page-btn" onclick="showPage(10)">10</button>
+                <button class="page-btn" onclick="showPage(11)">11</button>
+                <button class="page-btn" onclick="showPage(12)">12</button>
+                <button class="page-btn" onclick="showPage(13)">13</button>
+                <button class="page-btn" onclick="showPage(14)">14</button>
+                <button class="page-btn" onclick="showPage(15)">15</button>
+                <button class="page-btn" onclick="showPage(16)">16</button>
+                <button class="page-btn" onclick="showPage(17)">17</button>
+                <button class="page-btn" onclick="showPage(18)">18</button>
+            </div>
+        </div>
+
+    <div id="main-content">
+        <!-- Page 1: Title Page -->
+        <div class="page active" id="page1">
+            <div class="important-note">
+                <strong>Note:</strong> Google is used as the search engine throughout this package.
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title">About This Package</h2>
+                <p>This interactive supplementary package is designed to enhance your online research skills through practical exercises and real-world applications. Each page contains instructional content followed by interactive practice activities.</p>
+                
+                <p><strong>How to Use:</strong></p>
+                <ul class="bullet-list">
+                    <li>Navigate through pages using the page numbers at the top</li>
+                    <li>Complete practice exercises with instant feedback as you progress</li>
+                    <li>Click on Google search links to try searches yourself</li>
+                    <li>Take notes on each page to help with your learning</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h2 class="section-title">Learning Objectives</h2>
+                <p>By completing this package, you will:</p>
+                <ul class="bullet-list">
+                    <li>master effective Google search strategies</li>
+                    <li>learn to evaluate source credibility</li>
+                    <li>understand how to paraphrase research findings</li>
+                    <li>develop skills for academic and professional research</li>
+                </ul>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-1" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(1)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(1)">Clear</button>
+                    <div class="notes-status success" id="notes-status-1">Note cleared.</div>
+                </div>
+                <div class="notes-word-count" id="notes-count-1">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn next arrow-only" onclick="nextPage()" title="Next"></button>
+            </div>
+        </div>
+
+        <!-- Page 2: Basic Google Search -->
+        <div class="page" id="page2">
+            <h2 class="page-header basic-search">Basic Google Search</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Getting Started</h3>
+                <p>Google is the most widely used search engine, processing billions of searches daily. To get the best results, you need to understand how to construct effective search queries.</p>
+                
+                <p><strong>Basic Search Tips:</strong></p>
+                <ul class="bullet-list">
+                    <li>Use specific keywords for your topic</li>
+                    <li>Start with simple terms and then add details</li>
+                    <li>Skip common words like "the" or "and"</li>
+                    <li>Ignore perfect spelling - Google will suggest corrections</li>
+                </ul>
+            </div>
+
+            <div class="video-section">
+                <h3 class="video-title">Watch: Google Search Basics</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/BNHR6IQJGZs" title="Google Search Tips" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <p><em>Learn the fundamentals of effective Google searching in this tutorial.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Follow-up Questions: Basic Search Understanding</h3>
+                <div class="question">
+                    <div class="question-text">Q1: Which of the following is the best way to start a Google search?</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q2a" value="a"> Use very long sentences and questions
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2a" value="b"> Use specific keywords related to your topic
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2a" value="c"> Only search with one word
+                    </label>
+                    <div class="feedback" id="feedback2a"></div>
+                </div>
+                <div class="question">
+                    <div class="question-text">Q2: What does Google do if you spell a word incorrectly?</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q2b" value="a"> Ignores your search
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2b" value="b"> Suggests the correct spelling and shows results for what it thinks you meant
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2b" value="c"> Only displays advertisements related to the misspelt word
+                    </label>
+                    <div class="feedback" id="feedback2b"></div>
+                </div>
+                <div class="question">
+                    <div class="question-text">Q3: Why should you add more specific terms to your search?</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q2c" value="a"> To make your search results more focused
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2c" value="b"> To make Google slower
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2c" value="c"> To get more advertisements
+                    </label>
+                    <div class="feedback" id="feedback2c"></div>
+                </div>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 1: Basic Search</h3>
+                <p>You want to find information about renewable energy. Which search would be most effective?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best search query:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q1" value="a"> How can I find information about renewable energy sources?
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q1" value="b"> renewable energy sources
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q1" value="c"> tell me about energy
+                    </label>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+                
+                <a href="#"
+                   class="google-search-link"
+                   onclick="
+                     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=renewable+energy+sources',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this search on Google
+</a>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-2" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(2)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(2)">Clear</button>
+                    <div class="notes-status" id="notes-status-2"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-2">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 3: Refining Your Search -->
+        <div class="page" id="page3">
+            <h2 class="page-header refining-search">Refining Your Search</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Making Your Search More Specific</h3>
+                <p>Once you have basic results, you can refine your search to find more targeted information.</p>
+                
+                <p><strong>Refinement Strategies:</strong></p>
+                <ul class="bullet-list">
+                    <li>Add more specific keywords</li>
+                    <li>Use synonyms or related terms</li>
+                    <li>Include location or time-specific terms</li>
+                    <li>Use more precise vocabulary</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example:</div>
+                <p><strong>Too broad:</strong> "cars"</p>
+                <p><strong>Better:</strong> "electric cars"</p>
+                <p><strong>Most specific:</strong> "Tesla Model 3 review"</p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 2: Refining Search</h3>
+                <p>You searched for "dogs" and got too many general results. You specifically want information about training puppies. Which refined search would be best?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the most refined search:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q2" value="a"> canine behaviour training methods
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2" value="b"> puppy training techniques
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q2" value="c"> domestic pet behavioural guidance
+                    </label>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+                
+<a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=puppy+training+techniques',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this search on Google
+</a>            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-3" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(3)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(3)">Clear</button>
+                    <div class="notes-status" id="notes-status-3"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-3">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 4: Using Quotation Marks -->
+        <div class="page" id="page4">
+            <h2 class="page-header quotation-marks">Using Quotation Marks [" "]</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Exact Phrase Searching</h3>
+                <p>When you put words in quotation marks, Google searches for that exact phrase in that exact order.</p>
+                
+                <p><strong>When to use quotation marks:</strong></p>
+                <ul class="bullet-list">
+                    <li>Searching for a specific phrase or title</li>
+                    <li>Looking for a famous quote</li>
+                    <li>Finding a specific name or term</li>
+                    <li>When word order matters</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example:</div>
+                <p><strong>Without quotes:</strong> climate change effects</p>
+                <p><em>Results include pages with "climate," "change," and "effects" anywhere.</em></p>
+                <p><strong>With quotes:</strong> "climate change effects"</p>
+                <p><em>Results only include pages with this exact phrase.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 3: Quotation Marks</h3>
+                <p>You want to find information about the specific phrase "artificial intelligence in healthcare." How should you search?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the correct search format:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q3" value="a"> AI healthcare applications research
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q3" value="b"> "artificial intelligence in healthcare"
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q3" value="c"> artificial intelligence + healthcare systems
+                    </label>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+                
+                <a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=%22artificial+intelligence+in+healthcare%22',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this search on Google
+</a>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-4" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(4)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(4)">Clear</button>
+                    <div class="notes-status" id="notes-status-4"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-4">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 5: Using the Minus Sign -->
+        <div class="page" id="page5">
+            <h2 class="page-header minus-sign">Using the Minus Sign [-]</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Excluding Unwanted Results</h3>
+                <p>Use the minus sign (-) to exclude specific words from your search results. This helps eliminate irrelevant information.</p>
+                
+                <p><strong>How to use the minus sign:</strong></p>
+                <ul class="bullet-list">
+                    <li>Put the minus sign directly before the word (no space)</li>
+                    <li>Use it to exclude common but irrelevant terms</li>
+                    <li>Help narrow down broad topics</li>
+                    <li>Remove commercial results when seeking information</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example:</div>
+                <p><strong>Problem:</strong> Searching "apple" returns mostly results about the technology company</p>
+                <p><strong>Solution:</strong> "apple -computer -iphone -technology"</p>
+                <p><em>This excludes Apple Inc. results and focuses on the fruit.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 4: Minus Sign</h3>
+                <p>You want to research "Mercury" the planet, but keep getting results about the chemical element. How would you exclude the chemical information?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best search strategy:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q4" value="a"> Mercury planet -element -chemical
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q4" value="b"> Mercury celestial body astronomy
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q4" value="c"> planet Mercury solar system research
+                    </label>
+                    <div class="feedback" id="feedback4"></div>
+                </div>
+                
+                <a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=Mercury+planet+-element+-chemical',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this search on Google
+</a>
+
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-5" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(5)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(5)">Clear</button>
+                    <div class="notes-status" id="notes-status-5"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-5">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 6: Using OR -->
+        <div class="page" id="page6">
+            <h2 class="page-header or-search">Using OR [OR]</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Searching for Alternative Terms</h3>
+                <p>Use OR (in capital letters) to search for one term or another. This is useful when you want results that include any of several related terms.</p>
+                
+                <p><strong>When to use OR:</strong></p>
+                <ul class="bullet-list">
+                    <li>When you have synonyms for your topic</li>
+                    <li>To broaden your search results</li>
+                    <li>When different terms might be used for the same concept</li>
+                    <li>To find comprehensive information on related topics</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example:</div>
+                <p><strong>Search:</strong> "vacation OR holiday destinations"</p>
+                <p><em>Results will include pages with either "vacation" or "holiday" destinations.</em></p>
+                <p><strong>Search:</strong> "automobile OR car OR vehicle maintenance"</p>
+                <p><em>Results will include pages with any of the terms "automobile," "car," or "vehicle maintenance"—covering all common terms for motor vehicles.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 5: Using OR</h3>
+                <p>You want to find information about soft drinks, but different regions use different terms. Which search would capture the most comprehensive results?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best OR search:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q5" value="a"> soft drinks OR soda OR pop OR fizzy drinks
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q5" value="b"> carbonated beverages international terminology
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q5" value="c"> global soft drink naming conventions
+                    </label>
+                    <div class="feedback" id="feedback5"></div>
+                </div>
+                
+                <a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=soft+drinks+OR+soda+OR+pop+OR+fizzy+drinks',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this search on Google
+</a>
+
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-6" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(6)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(6)">Clear</button>
+                    <div class="notes-status" id="notes-status-6"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-6">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 7: Site-Specific Searches -->
+        <div class="page" id="page7">
+            <h2 class="page-header site-specific">Site-Specific Searches [site:]</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Searching Within Specific Websites</h3>
+                <p>Use "site:" followed by a website domain to search only within that specific site. This is particularly useful for finding information on large websites or specific types of sources.</p>
+                
+                <p><strong>Useful site-specific searches:</strong></p>
+                <ul class="bullet-list">
+                    <li><strong>site:edu</strong> - Search only educational institutions</li>
+                    <li><strong>site:gov</strong> - Search only government websites</li>
+                    <li><strong>site:org</strong> - Search only organisation websites</li>
+                    <li><strong>site:wikipedia.org</strong> - Search only Wikipedia</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example:</div>
+                <p><strong>Search:</strong> "renewable energy site:edu"</p>
+                <p><em>Results will include pages about renewable energy exclusively from educational institutions.</em></p>
+                <p><strong>Search:</strong> "climate data site:gov"</p>
+                <p><em>Results will include government pages providing climate data.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 6: Site-Specific Search</h3>
+                <p>You need reliable, academic information about nutrition. Which search would give you the most credible educational sources?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best site-specific search:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q6" value="a"> nutrition facts
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q6" value="b"> nutrition site:edu
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q6" value="c"> nutrition site:com
+                    </label>
+                    <div class="feedback" id="feedback6"></div>
+                </div>
+                
+                <a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=nutrition+site%3Aedu',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this search on Google
+</a>
+
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-7" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(7)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(7)">Clear</button>
+                    <div class="notes-status" id="notes-status-7"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-7">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 8: File Type Searches -->
+        <div class="page" id="page8">
+            <h2 class="page-header file-type">File Type Searches [filetype:]</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Finding Specific Document Types</h3>
+                <p>Use "filetype:" or "ext:" to search for specific file formats. This is useful when you need particular types of documents.</p>
+                
+                <p><strong>Common file types:</strong></p>
+                <ul class="bullet-list">
+                    <li><strong>filetype:pdf</strong> - PDF documents</li>
+                    <li><strong>filetype:doc</strong> - Word documents</li>
+                    <li><strong>filetype:ppt</strong> - PowerPoint presentations</li>
+                    <li><strong>filetype:xls</strong> - Excel spreadsheets</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example:</div>
+                <p><strong>Search:</strong> "marketing strategy filetype:pdf"</p>
+                <p><em>Results will include PDF documents related to marketing strategy.</em></p>
+                <p><strong>Search:</strong> "annual report 2025 filetype:pdf"</p>
+                <p><em>Results will include 2025 annual reports available in PDF format.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 7: File Type Search</h3>
+                <p>You need to find PowerPoint presentations about space exploration for a class project. Which search would be most effective?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the correct file type search:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q7" value="a"> space exploration presentations
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q7" value="b"> space exploration filetype:ppt
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q7" value="c"> space exploration filetype:pdf
+                    </label>
+                    <div class="feedback" id="feedback7"></div>
+                </div>
+                
+                <a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=space+exploration+filetype%3Appt',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this search on Google
+</a>
+
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-8" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(8)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(8)">Clear</button>
+                    <div class="notes-status" id="notes-status-8"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-8">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 9: Evaluating Sources -->
+        <div class="page" id="page9">
+            <h2 class="page-header evaluating">Evaluating Sources</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Determining Source Credibility</h3>
+                <p>Not all information online is reliable. You need to evaluate sources to ensure the information you use is credible and accurate.</p>
+                
+                <p><strong>Key factors to consider:</strong></p>
+                <ul class="bullet-list">
+                    <li><strong>Authority:</strong> Who wrote or published the information?</li>
+                    <li><strong>Currency:</strong> How recent is the information?</li>
+                    <li><strong>Accuracy:</strong> Are there sources cited? Can facts be verified?</li>
+                    <li><strong>Purpose:</strong> Why was this information created?</li>
+                    <li><strong>Objectivity:</strong> Is the information biased or balanced?</li>
+                </ul>
+            </div>
+
+            <div class="video-section">
+                <h3 class="video-title">Watch: Evaluating Online Sources</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/q1k8rcYUmbQ" title="How to Evaluate Sources" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <p><em>Learn how to identify credible sources and avoid misinformation in this guide.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Follow-up Questions: Source Evaluation</h3>
+                
+                <div class="question">
+                    <div class="question-text">Q1: Which is the most important indicator of a credible online source?</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q9a" value="a"> The website uses lots of colours and images.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9a" value="b"> The author is an expert and cites reliable studies.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9a" value="c"> The article is very long.
+                    </label>
+                    <div class="feedback" id="feedback9a"></div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">Q2: Why is it important to check the currency of information?</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q9b" value="a"> Older information is always better.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9b" value="b"> Recent information is more likely to be accurate and relevant.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9b" value="c"> Outdated information may be incorrect.
+                    </label>
+                    <div class="feedback" id="feedback9b"></div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">Q3: What should you do if two credible sources give different facts?</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q9c" value="a"> Ignore both sources
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9c" value="b"> Compare them and look for additional evidence
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9c" value="c"> Only believe the first source you found
+                    </label>
+                    <div class="feedback" id="feedback9c"></div>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Credible Source Indicators:</div>
+                <ul class="bullet-list">
+                    <li>Author credentials and expertise listed</li>
+                    <li>Published by reputable institutions (.edu, .gov, established organisations)</li>
+                    <li>Recent publication date</li>
+                    <li>References and citations provided</li>
+                    <li>Professional appearance and error-free writing</li>
+                </ul>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 8: Source Evaluation</h3>
+                <p>You find an article about climate change. Which factor would MOST indicate the source is credible?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the most important credibility indicator:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q8" value="a"> The website has many colourful graphics
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q8" value="b"> The author is a climate scientist at a university and cites peer-reviewed studies
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q8" value="c"> The article is very long and detailed
+                    </label>
+                    <div class="feedback" id="feedback8"></div>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-9" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(9)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(9)">Clear</button>
+                    <div class="notes-status" id="notes-status-9"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-9">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 10: Checking Multiple Sources -->
+        <div class="page" id="page10">
+            <h2 class="page-header multiple-sources">Checking Multiple Sources</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Cross-Referencing Information</h3>
+                <p>Always verify information by checking multiple sources. This helps ensure accuracy and provides a more complete understanding of your topic.</p>
+                
+                <p><strong>Best practices for multiple sources:</strong></p>
+                <ul class="bullet-list">
+                    <li>Check at least 2-3 different sources</li>
+                    <li>Look for sources that cite the same original research</li>
+                    <li>Compare different perspectives on controversial topics</li>
+                    <li>Use a variety of source types (academic, news, government)</li>
+                    <li>Note any contradictions and investigate further</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Source Diversity Example:</div>
+                <p><strong>Topic:</strong> Effects of sleep deprivation</p>
+                <ul class="bullet-list">
+                    <li><strong>Academic source:</strong> University sleep study</li>
+                    <li><strong>Medical source:</strong> Centre for Health Protection (Department of Health, HKSAR)</li>
+                    <li><strong>Research source:</strong> HKU Sleep Research Clinic and Laboratory</li>
+                    <li><strong>News source:</strong> Recent research coverage</li>
+                </ul>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 9: Multiple Sources</h3>
+                <p>You're researching the health effects of a new diet trend. You find one enthusiastic blog post claiming amazing results. What should you do next?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best next step:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q9" value="a"> Use the blog post as your main source since it has detailed information
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9" value="b"> Look for additional sources including medical websites, research studies, and nutrition experts
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q9" value="c"> Search for more blog posts about the same diet as they may contain similar personal experiences and testimonials
+                    </label>
+                    <div class="feedback" id="feedback9"></div>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-10" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(10)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(10)">Clear</button>
+                    <div class="notes-status" id="notes-status-10"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-10">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 11: Understanding Search Results -->
+        <div class="page" id="page11">
+            <h2 class="page-header search-results">Understanding Search Results</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Reading Search Result Pages</h3>
+                <p>Google search results contain valuable information beyond just the link. Learning to read result pages effectively helps you choose the best sources quickly.</p>
+                
+                <p><strong>Key elements of search results:</strong></p>
+                <ul class="bullet-list">
+                    <li><strong>Title (blue link):</strong> The clickable headline of the page</li>
+                    <li><strong>URL (green text):</strong> The web address showing the source</li>
+                    <li><strong>Snippet:</strong> Brief description or excerpt from the page</li>
+                    <li><strong>Date:</strong> When the page was published or last updated</li>
+                    <li><strong>Site links:</strong> Additional links to sections of the website</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Reading the URL:</div>
+                <p><strong>.edu</strong> = Educational institution (universities, colleges)</p>
+                <p><strong>.gov</strong> = Government website</p>
+                <p><strong>.org</strong> = Organisation (often non-profit)</p>
+                <p><strong>.com</strong> = Commercial website</p>
+                <p><strong>Country codes:</strong> .uk, .ca, .au indicate the country of origin</p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 10: Reading Results</h3>
+                <p>Fill in the blanks about search result elements:</p>
+                
+                <div class="question">
+                    <div class="question-text">
+                        The <input type="text" class="fill-blank" id="blank1" placeholder="Hint: colour"> clickable text at the top of each search result is called the title, while the <input type="text" class="fill-blank" id="blank2" placeholder="Hint: description"> provides a brief description of the page content.
+                    </div>
+                    <button class="check-answer-btn" onclick="checkFillBlanks()">Check Answers</button>
+                    <div class="feedback" id="feedback10"></div>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-11" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(11)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(11)">Clear</button>
+                    <div class="notes-status" id="notes-status-11"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-11">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 12: Advanced Search Combinations -->
+        <div class="page" id="page12">
+            <h2 class="page-header advanced">Advanced Search Combinations</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Combining Search Techniques</h3>
+                <p>For complex research topics, you can combine multiple search techniques to create powerful, precise queries.</p>
+                
+                <p><strong>Combination strategies:</strong></p>
+                <ul class="bullet-list">
+                    <li>Use quotation marks with site-specific searches</li>
+                    <li>Combine OR with minus signs to include some terms while excluding others</li>
+                    <li>Use file type searches with specific sites</li>
+                    <li>Add date ranges for current information</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Advanced Search Examples:</div>
+                <p><strong>"renewable energy" site:edu filetype:pdf</strong></p>
+                <p><em>Results will include PDF documents about renewable energy from educational institutions.</em></p>
+                <p><strong>vaccination OR immunisation site:gov -commercial</strong></p>
+                <p><em>Results will include government pages about vaccination or immunisation, excluding commercial sites.</em></p>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 11: Advanced Combinations</h3>
+                <p>You need recent, academic PDF research about "machine learning applications" but want to exclude results about gaming. Which search combines techniques most effectively?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the most advanced search combination:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q11" value="a"> machine learning academic research applications
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q11" value="b"> "machine learning applications" site:edu filetype:pdf -gaming
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q11" value="c"> machine learning applications university research papers
+                    </label>
+                    <div class="feedback" id="feedback11"></div>
+                </div>
+                
+                <a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://www.google.com/search?q=%22machine+learning+applications%22+site%3Aedu+filetype%3Apdf+-gaming',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Try this advanced search on Google
+</a>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-12" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(12)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(12)">Clear</button>
+                    <div class="notes-status" id="notes-status-12"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-12">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 13: Google Scholar -->
+        <div class="page" id="page13">
+            <h2 class="page-header scholar">Google Scholar</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Academic and Scholarly Research</h3>
+                <p>Google Scholar is a specialised search engine that focuses on scholarly literature, including articles, theses, books, conference papers, and citations from academic publishers.</p>
+                
+                <p><strong>Benefits of Google Scholar:</strong></p>
+                <ul class="bullet-list">
+                    <li>Access to peer-reviewed academic papers</li>
+                    <li>Citation tracking and related articles</li>
+                    <li>Author profile information</li>
+                    <li>Advanced search options for academic research</li>
+                    <li>Links to full-text articles when available</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">When to Use Google Scholar:</div>
+                <ul class="bullet-list">
+                    <li>Writing research papers or academic assignments</li>
+                    <li>Looking for peer-reviewed studies</li>
+                    <li>Finding original research on scientific topics</li>
+                    <li>Checking citation counts for source credibility</li>
+                    <li>Accessing academic books and conference proceedings</li>
+                </ul>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 12: Google Scholar</h3>
+                <p>You're writing a research paper about the psychological effects of social media. Which source would be most appropriate to find through Google Scholar?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the most scholarly source type:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q12" value="a"> A popular magazine article about teenagers and Instagram
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q12" value="b"> A peer-reviewed study published in the Journal of Psychology about social media's impact on mental health
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q12" value="c"> A blog post by a social media influencer
+                    </label>
+                    <div class="feedback" id="feedback12"></div>
+                </div>
+                
+                <a href="#"
+   class="google-search-link"
+   onclick="
+     (function(){
+       const w = window.open(
+         'https://scholar.google.com/scholar?q=social+media+psychological+effects',
+         '_blank',
+         'noopener,noreferrer'
+       );
+       if (w) {
+         setTimeout(function(){
+           try { w.blur(); } catch(e){}
+           window.focus();
+         }, 100);
+       }
+     })();
+     return false;
+   ">
+  Search this topic on Google Scholar
+</a>
+
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-13" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(13)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(13)">Clear</button>
+                    <div class="notes-status" id="notes-status-13"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-13">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 14: Understanding AI-Generated Answers -->
+        <div class="page" id="page14">
+            <h2 class="page-header ai-answers">Understanding AI-Generated Answers</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Google's AI Overview Feature</h3>
+                <p>Google now sometimes displays AI-generated answers at the top of search results. These are created by artificial intelligence and provide quick summaries, but they require careful evaluation.</p>
+                
+                <p><strong>Key characteristics of AI-generated answers:</strong></p>
+                <ul class="bullet-list">
+                    <li>Appear in a special box at the top of results</li>
+                    <li>Usually labelled as "AI Overview" or similar</li>
+                    <li>Synthesise information from multiple sources</li>
+                    <li>May include source links for verification</li>
+                    <li>Can sometimes contain errors or oversimplifications</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Example AI-Generated Answer:</div>
+                <p><strong>Search:</strong> "How does photosynthesis work?"</p>
+                <p><strong>AI Overview might show:</strong> "Photosynthesis is the process by which plants convert sunlight, carbon dioxide, and water into glucose and oxygen. This occurs primarily in the chloroplasts of plant cells using chlorophyll. The process involves two main stages: light-dependent reactions and the Calvin cycle."</p>
+                <p><em>This would be followed by source links to verify the information.</em></p>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">How to Use AI Answers Responsibly</h3>
+                <ul class="bullet-list">
+                    <li><strong>Verify information:</strong> Always check the provided source links</li>
+                    <li><strong>Cross-reference:</strong> Compare with other reliable sources</li>
+                    <li><strong>Use as a starting point:</strong> Not as your final or only source</li>
+                    <li><strong>Be aware of limitations:</strong> AI can make mistakes or miss nuances</li>
+                    <li><strong>Check for recent information:</strong> AI summaries may not include the latest developments</li>
+                </ul>
+            </div>
+
+            <div class="practice-section">
+                <h3 class="practice-title">Practice 13: AI-Generated Answers</h3>
+                <p>You see an AI-generated answer about a complex scientific topic at the top of your Google search results. What should you do?</p>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best approach:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="q13" value="a"> Use it as your only source since AI is always accurate
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q13" value="b"> Read it for a quick overview, then verify the information using the provided source links and additional reliable sources
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="q13" value="c"> Ignore it completely and only look at traditional search results
+                    </label>
+                    <div class="feedback" id="feedback13"></div>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-14" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(14)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(14)">Clear</button>
+                    <div class="notes-status" id="notes-status-14"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-14">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 15: Paraphrasing and Summarizing -->
+        <div class="page" id="page15">
+            <h2 class="page-header paraphrasing">Paraphrasing and Summarising Research</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Putting Information in Your Own Words</h3>
+                <p>Once you find reliable information, you need to paraphrase it effectively. Paraphrasing means expressing someone else's ideas using your own words and sentence structure while maintaining the original meaning.</p>
+                
+                <p><strong>Why paraphrase?</strong></p>
+                <ul class="bullet-list">
+                    <li>Demonstrates your understanding of the material</li>
+                    <li>Avoids plagiarism while using source information</li>
+                    <li>Helps integrate sources smoothly into your writing</li>
+                    <li>Shows critical thinking and analysis</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Effective Paraphrasing Techniques</h3>
+                <ol class="ordered-list">
+                    <li><strong>Read and understand:</strong> Make sure you fully comprehend the original text</li>
+                    <li><strong>Identify key ideas:</strong> Focus on the main concepts, not minor details</li>
+                    <li><strong>Use different words:</strong> Replace vocabulary with synonyms where appropriate</li>
+                    <li><strong>Change sentence structure:</strong> Reorganise how the information is presented</li>
+                    <li><strong>Maintain meaning:</strong> Ensure your version conveys the same message</li>
+                    <li><strong>Cite the source:</strong> Always give credit to the original author</li>
+                </ol>
+            </div>
+
+            <div class="example-box">
+                <div class="example-title">Paraphrasing Example:</div>
+                <p><strong>Original:</strong> "Climate change refers to long-term shifts in global temperatures and weather patterns, primarily caused by human activities such as burning fossil fuels."</p>
+                
+                <p><strong>Good Paraphrase:</strong> "Human actions, particularly the combustion of fossil fuels, are the main drivers of climate change, which involves lasting changes in worldwide temperature and weather systems."</p>
+                
+                <p><strong>Why this is a good paraphrase:</strong></p>
+                <ul class="bullet-list">
+                    <li>Uses different vocabulary ("combustion" instead of "burning", "drivers" instead of "caused by")</li>
+                    <li>Changes sentence structure (starts with "Human actions" instead of "Climate change")</li>
+                    <li>Preserves the original meaning completely</li>
+                    <li>Demonstrates understanding by reorganising the information logically</li>
+                </ul>
+                
+                <p><strong>Poor Paraphrase:</strong> "Climate change means long-term shifts in global temperatures and weather patterns, mainly caused by human activities like burning fossil fuels." <em>(Too similar to original - only minor word changes)</em></p>
+            </div>
+
+            <div class="paraphrase-exercise">
+                <h3 class="paraphrase-title">Paraphrasing Exercise 1</h3>
+                <div class="original-text">
+                    <div class="original-label">Original Text:</div>
+                    <p>"Social media platforms have changed how people talk and share information, giving new ways to connect but also bringing worries about privacy and mental health."</p>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best paraphrase:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="p1" value="a"> Social media lets people post pictures and videos online but doesn't affect privacy or mental health.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="p1" value="b"> Social media has changed how people communicate and share, offering new connections but also causing concerns about privacy and mental health.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="p1" value="c"> Social media changed communication and information sharing, helping people connect, but some people worry about privacy and mental health.
+                    </label>
+                    <div class="feedback" id="feedbackP1"></div>
+                </div>
+            </div>
+
+            <div class="paraphrase-exercise">
+                <h3 class="paraphrase-title">Paraphrasing Exercise 2</h3>
+                <div class="original-text">
+                    <div class="original-label">Original Text:</div>
+                    <p>"Solar, wind, and water power are types of clean energy. They can take the place of oil and gas and help keep the air clean."</p>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best paraphrase:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="p2" value="a"> Solar, wind, and water power are clean energies that can be used instead of oil and gas to help the air stay clean.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="p2" value="b"> Solar, wind, and water power are types of energy that people use, but they don't always work as well as oil and gas 
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="p2" value="c"> Using solar, wind, and water power helps people use less oil and gas, but sometimes these clean energies are not available.
+                    </label>
+                    <div class="feedback" id="feedbackP2"></div>
+                </div>
+            </div>
+
+            <div class="paraphrase-exercise">
+                <h3 class="paraphrase-title">Paraphrasing Exercise 3</h3>
+                <div class="original-text">
+                    <div class="original-label">Original Text:</div>
+                    <p>"Doing exercise often is good for your heart, helps protect you from getting sick, and makes you feel happier."</p>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Choose the best paraphrase:</div>
+                    <label class="answer-option">
+                        <input type="radio" name="p3" value="a"> Doing exercise a lot helps your heart, your immune system, and your mood.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="p3" value="b"> Exercise only helps you get better at sports and does not help your heart or mind.
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="p3" value="c"> Exercise is only for people who want to lose weight and does not make you feel happy.
+                    </label>
+                    <div class="feedback" id="feedbackP3"></div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Additional Tips for Academic Writing</h3>
+                <ul class="bullet-list">
+                    <li><strong>Use transition phrases:</strong> "According to [source]," "Research indicates," "The study found that"</li>
+                    <li><strong>Combine information:</strong> Merge ideas from multiple sources into cohesive paragraphs</li>
+                    <li><strong>Add your analysis:</strong> Include your own interpretation or connection to your thesis</li>
+                    <li><strong>Vary your approach:</strong> Mix paraphrasing with direct quotes and your own ideas</li>
+                    <li><strong>Keep track of sources:</strong> Maintain clear records for proper citation</li>
+                </ul>
+            </div>
+
+            <div class="important-note">
+                <strong>Remember:</strong> Even when paraphrasing, you must cite your sources. Paraphrasing without citation is still plagiarism. Always give credit to the original authors of the ideas you're using.
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-15" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(15)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(15)">Clear</button>
+                    <div class="notes-status" id="notes-status-15"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-15">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 16: Summary Activity -->
+        <div class="page" id="page16">
+            <h2 class="page-header summary">Summary Activity: Test Your Knowledge</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Drag and Drop Summary Activity</h3>
+                <p>Test your understanding of the key concepts from this course by dragging the correct answers to complete each statement. This activity covers all the major topics you've learned about online research skills.</p>
+            </div>
+
+            <div class="drag-drop-container">
+                <h3 class="drag-drop-title">Complete the Statements.</h3>
+                
+                <!-- Drag Options Section - Shuffled Order -->
+                <div class="drag-options-section">
+                    <div class="drag-options-title">📚 Drag the correct answers from below:</div>
+                    <div class="drag-options">
+                        <div class="drag-item" draggable="true" data-answer="verify">verify</div>
+                        <div class="drag-item" draggable="true" data-answer="site:edu">site:edu</div>
+                        <div class="drag-item" draggable="true" data-answer="Paraphrasing">Paraphrasing</div>
+                        <div class="drag-item" draggable="true" data-answer="multiple">multiple</div>
+                        <div class="drag-item" draggable="true" data-answer="Google Scholar">Google Scholar</div>
+                        <div class="drag-item" draggable="true" data-answer="expertise">expertise</div>
+                        <div class="drag-item" draggable="true" data-answer="quotation marks">quotation marks</div>
+                        <div class="drag-item" draggable="true" data-answer="filetype:pdf">filetype:pdf</div>
+                        <div class="drag-item" draggable="true" data-answer="minus">minus</div>
+
+                    </div>
+                </div>
+                
+                <!-- Questions Grid - 3x3 Layout -->
+                <div class="questions-grid">
+                    <!-- Question 1 -->
+                    <div class="drag-drop-question" data-question="1">
+                        <div class="drag-drop-question-text">1. When you want to search for an exact phrase, you should use _____ around your search terms.</div>
+                        <div class="drop-zone" data-answer="quotation marks">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="drag-drop-question" data-question="2">
+                        <div class="drag-drop-question-text">2. To exclude unwanted results from your search, you use the _____ sign directly before the word.</div>
+                        <div class="drop-zone" data-answer="minus">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 3 (removed OR question) -->
+                    <div class="drag-drop-question" data-question="3">
+                        <div class="drag-drop-question-text">3. To search only within educational institutions, you would use _____.</div>
+                        <div class="drop-zone" data-answer="site:edu">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="drag-drop-question" data-question="4">
+                        <div class="drag-drop-question-text">4. When looking for PDF documents specifically, you would use _____.</div>
+                        <div class="drop-zone" data-answer="filetype:pdf">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="drag-drop-question" data-question="5">
+                        <div class="drag-drop-question-text">5. The most important factor in evaluating source credibility is the author's _____ and citations.</div>
+                        <div class="drop-zone" data-answer="expertise">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="drag-drop-question" data-question="6">
+                        <div class="drag-drop-question-text">6. You should always check _____ sources to verify information accuracy.</div>
+                        <div class="drop-zone" data-answer="multiple">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="drag-drop-question" data-question="7">
+                        <div class="drag-drop-question-text">7. _____ is the specialized search engine for academic and scholarly research.</div>
+                        <div class="drop-zone" data-answer="Google Scholar">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 8 -->
+                    <div class="drag-drop-question" data-question="8">
+                        <div class="drag-drop-question-text">8. When using AI-generated answers, you should always _____ the information with original sources.</div>
+                        <div class="drop-zone" data-answer="verify">Drop answer here</div>
+                    </div>
+
+                    <!-- Question 9 -->
+                    <div class="drag-drop-question" data-question="9">
+                        <div class="drag-drop-question-text">9. _____ means expressing someone else's ideas in your own words while maintaining the original meaning.</div>
+                        <div class="drop-zone" data-answer="Paraphrasing">Drop answer here</div>
+                    </div>
+                </div>
+
+                <div class="activity-controls">
+                    <button class="reset-btn" onclick="resetDragDrop()">Reset Activity</button>
+                    <button class="check-answers-btn" onclick="checkDragDropAnswers()">Check Answers</button>
+                </div>
+
+                <div class="score-display" id="drag-drop-score" style="display: none;">
+                    Score: <span id="score-text">0/9</span>
+                </div>
+
+                <div class="activity-feedback" id="drag-drop-feedback"></div>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-16" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(16)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(16)">Clear</button>
+                    <div class="notes-status" id="notes-status-16"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-16">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 17: Summary and Congratulations -->
+        <div class="page" id="page17">
+            <h2 class="page-header summary">Course Summary</h2>
+            
+            <div class="congratulations-section">
+                <h3 class="congratulations-title">🎉 Congratulations! 🎉</h3>
+                <p class="congratulations-text">
+                    You have successfully completed the VE2D Supplementary Package for Online Research Skills! 
+                    You now possess essential digital literacy skills that will serve you well in academic, professional, and personal contexts.
+                </p>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">What You've Learned</h3>
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <div class="skill-icon">🔍</div>
+                        <div class="skill-title">Basic Search Skills</div>
+                        <p>Effective keyword selection and search query construction</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">🎯</div>
+                        <div class="skill-title">Advanced Search Techniques</div>
+                        <p>Quotation marks, minus signs, OR operators, site-specific and filetype searches</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">🛡️</div>
+                        <div class="skill-title">Source Evaluation</div>
+                        <p>Assessing credibility, authority, currency, and accuracy of online sources</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">🔗</div>
+                        <div class="skill-title">Multi-Source Research</div>
+                        <p>Cross-referencing information and using diverse source types</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">🎓</div>
+                        <div class="skill-title">Academic Research</div>
+                        <p>Using Google Scholar and understanding scholarly sources</p>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-icon">✍️</div>
+                        <div class="skill-title">Paraphrasing & Citation</div>
+                        <p>Ethical use of sources and effective paraphrasing techniques</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Key Takeaways</h3>
+                <ol class="ordered-list">
+                    <li><strong>Be strategic with search terms:</strong> Use specific keywords and combine multiple search techniques for better results</li>
+                    <li><strong>Always evaluate sources:</strong> Check authority, currency, accuracy, and purpose before using information</li>
+                    <li><strong>Cross-reference information:</strong> Use multiple sources to verify facts and gain comprehensive understanding</li>
+                    <li><strong>Understand search results:</strong> Read URLs, snippets, and dates to choose the most relevant sources</li>
+                    <li><strong>Use Google Scholar for academic work:</strong> Access peer-reviewed sources for credible research</li>
+                    <li><strong>Paraphrase effectively:</strong> Change vocabulary and sentence structure while preserving meaning and citing sources</li>
+                </ol>
+            </div>
+
+            <div class="important-note">
+                <strong>Remember:</strong> Good research skills are developed through practice. Continue applying these techniques, and you'll become increasingly proficient at finding, evaluating, and using online information effectively and ethically.
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-17" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(17)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(17)">Clear</button>
+                    <div class="notes-status" id="notes-status-17"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-17">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+                <button class="nav-btn next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 18: References -->
+        <div class="page" id="page18">
+            <h2 class="page-header references">References</h2>
+            
+            <div class="content-section">
+                <h3 class="section-title">Acknowledgments and Sources</h3>
+                <p>This supplementary package was created with information and resources from various credible sources. We acknowledge and thank the following contributors:</p>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Technology and Platform</h3>
+                <div class="reference-item">
+                    <div class="reference-category">Interactive Platform:</div>
+                    <p><strong>Kuse AI</strong> - AI-powered educational platform used for creating interactive learning content</p>
+                    <p>
+  <a href="#"
+     class="reference-link"
+     onclick="
+       (function(){
+         const w = window.open(
+           'https://kuse.ai',
+           '_blank',
+           'noopener,noreferrer'
+         );
+         if (w) {
+           setTimeout(function(){
+             try { w.blur(); } catch(e){}
+             window.focus();
+           }, 100);
+         }
+       })();
+       return false;
+     ">
+    Visit Kuse AI
+  </a>
+</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Health and Research Information</h3>
+                <div class="reference-item">
+                    <div class="reference-category">Public Health Authority:</div>
+                    <p><strong>Centre for Health Protection, Department of Health, HKSAR</strong> - Referenced for health-related examples and credible source identification</p>
+                    <p>
+  <a href="#"
+     class="reference-link"
+     onclick="
+       (function(){
+         const w = window.open(
+           'https://www.chp.gov.hk/en/index.html',
+           '_blank',
+           'noopener,noreferrer'
+         );
+         if (w) {
+           setTimeout(function(){
+             try { w.blur(); } catch(e){}
+             window.focus();
+           }, 100);
+         }
+       })();
+       return false;
+     ">
+    Visit Centre for Health Protection
+  </a>
+</p>
+                </div>
+                
+                <div class="reference-item">
+                    <div class="reference-category">Academic Research Institution:</div>
+                    <p><strong>HKU Sleep Research Clinic and Laboratory</strong> - Referenced as an example of credible academic research sources</p>
+                    <p>
+  <a href="#"
+     class="reference-link"
+     onclick="
+       (function(){
+         const w = window.open(
+           'https://www.hku.hk/',
+           '_blank',
+           'noopener,noreferrer'
+         );
+         if (w) {
+           setTimeout(function(){
+             try { w.blur(); } catch(e){}
+             window.focus();
+           }, 100);
+         }
+       })();
+       return false;
+     ">
+    Visit University of Hong Kong
+  </a>
+</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Educational Videos</h3>
+                <div class="reference-item">
+                    <div class="reference-category">Google Search Tutorial:</div>
+                    <p><strong>YouTube Video:</strong> "Google Search Tips" - Basic search techniques demonstration</p>
+                    <p>
+  <a href="#"
+     class="reference-link"
+     onclick="
+       (function(){
+         const w = window.open(
+           'https://www.youtube.com/watch?v=BNHR6IQJGZs',
+           '_blank',
+           'noopener,noreferrer'
+         );
+         if (w) {
+           setTimeout(function(){
+             try { w.blur(); } catch(e){}
+             window.focus();
+           }, 100);
+         }
+       })();
+       return false;
+     ">
+    Watch Video
+  </a>
+</p>
+                </div>
+                
+                <div class="reference-item">
+                    <div class="reference-category">Source Evaluation Tutorial:</div>
+                    <p><strong>YouTube Video:</strong> "How to Evaluate Sources" - Comprehensive guide to evaluating online sources</p>
+                    <p>
+  <a href="#"
+     class="reference-link"
+     onclick="
+       (function(){
+         const w = window.open(
+           'https://www.youtube.com/watch?v=q1k8rcYUmbQ',
+           '_blank',
+           'noopener,noreferrer'
+         );
+         if (w) {
+           setTimeout(function(){
+             try { w.blur(); } catch(e){}
+             window.focus();
+           }, 100);
+         }
+       })();
+       return false;
+     ">
+    Watch Video
+  </a>
+</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Search Engines and Tools</h3>
+                <div class="reference-item">
+                    <div class="reference-category">Primary Search Engine:</div>
+                    <p><strong>Google</strong> - Used throughout this package as the primary search engine for examples and practice exercises</p>
+                    <p>
+  <a href="#"
+     class="reference-link"
+     onclick="
+       (function(){
+         const w = window.open(
+           'https://www.google.com',
+           '_blank',
+           'noopener,noreferrer'
+         );
+         if (w) {
+           setTimeout(function(){
+             try { w.blur(); } catch(e){}
+             window.focus();
+           }, 100);
+         }
+       })();
+       return false;
+     ">
+    Visit Google
+  </a>
+</p>
+                </div>
+                
+                <div class="reference-item">
+                    <div class="reference-category">Academic Search Engine:</div>
+                    <p><strong>Google Scholar</strong> - Specialized search engine for academic and scholarly content</p>
+                    <p>
+  <a href="#"
+     class="reference-link"
+     onclick="
+       (function(){
+         const w = window.open(
+           'https://scholar.google.com',
+           '_blank',
+           'noopener,noreferrer'
+         );
+         if (w) {
+           setTimeout(function(){
+             try { w.blur(); } catch(e){}
+             window.focus();
+           }, 100);
+         }
+       })();
+       return false;
+     ">
+    Visit Google Scholar
+  </a>
+</p>
+
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Research Methodology</h3>
+                <p>The content and examples in this package are based on established information literacy principles and best practices from:</p>
+                <ul class="bullet-list">
+                    <li>Association of College and Research Libraries (ACRL) Information Literacy Standards</li>
+                    <li>Academic library research guides and tutorials</li>
+                    <li>Digital literacy frameworks from educational institutions</li>
+                    <li>Current best practices in online research methodology</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3 class="section-title">Disclaimer</h3>
+                <p>This educational package is designed for instructional purposes. While every effort has been made to ensure accuracy, users should verify information independently and consult with appropriate professionals for specific research needs. The linked external resources are provided for educational reference and are not controlled by the creators of this package.</p>
+            </div>
+
+            <!-- Restart Book Section -->
+            <div class="restart-book-section" id="restart-book-section">
+                <h3 class="restart-book-title">🎓 Book Complete!</h3>
+                <div class="restart-confirmation">
+                    <h4>Ready to Start Fresh?</h4>
+                    <p>If you'd like to go through the book again, you can restart the entire book. This will:</p>
+                    <ul>
+                        <li>Return you to page 1.</li>
+                        <li>Clear all your highlights and saved notes.</li>
+                        <li>Reset all quiz answers and activities.</li>
+                        <li>Give you a completely fresh start.</li>
+                    </ul>
+                </div>
+                <p class="restart-book-text">
+                    Whether you want to review the material, share it with others, or simply experience it again, 
+                    clicking the button below will give you a clean slate to work with.
+                </p>
+                <button class="restart-book-btn" onclick="restartBook()">
+                    Restart Book
+                </button>
+            </div>
+
+            <div class="notes-section">
+                <h3 class="notes-title">Your Notes for This Page</h3>
+                <textarea class="notes-textarea" id="notes-page-18" placeholder="Add your personal notes about this page here... You can jot down key points, questions, or insights as you study."></textarea>
+                <div class="notes-controls">
+                    <button class="notes-save-btn" onclick="saveNote(18)">Save Note</button>
+                    <button class="notes-clear-btn" onclick="clearNote(18)">Clear</button>
+                    <div class="notes-status" id="notes-status-18"></div>
+                </div>
+                <div class="notes-word-count" id="notes-count-18">0 words</div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="nav-btn prev" onclick="previousPage()">Previous</button>
+            </div>
+        </div>
+
+<div class="branding" onclick="
+  (function(){
+    const newWin = window.open(
+      'https://kuse.ai',
+      '_blank',
+      'noopener,noreferrer'
+    );
+    if (newWin) {
+      setTimeout(() => {
+        try { newWin.blur(); } catch(e){}
+        window.focus();
+      }, 100);
+    }
+  })();
+  return false;
+">
+  made with 
+  <svg viewBox="0 0 160 44" xmlns="http://www.w3.org/2000/svg">
+                <path d="m.01,20.65C-.43,8.25,9.3-2.03,22.04.34,34.78,2.72,43.29,8.32,43.29,22.9s-8.66,19.01-22.03,20.3C7.9,44.5.46,33.05.01,20.65z" fill="currentColor"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="m146.76,7.94c8.07,0,13.24,6.15,13.24,14.58v1.39h-20.75c.45,4.05,3.51,7.37,8.57,7.37,2.62,0,5.73-1.05,7.62-2.94l2.67,3.83c-2.67,2.55-6.62,3.88-10.9,3.88-8.07,0-14.08-5.6-14.08-14.08,0-7.76,5.67-14.02,13.63-14.02zm0,4.77c-5.01,0-7.29,3.83-7.57,7.1h15.13c-.11-3.16-2.28-7.1-7.57-7.1z" fill="currentColor"/>
+                <path d="m86.64,24.49c0,4.15,2.39,6.84,6.84,6.84,4.4,0,6.84-2.69,6.84-6.84V8.55h5.37v16.33c0,6.7-4.06,11.14-12.21,11.14-8.21,0-12.21-4.5-12.21-11.09V8.55h5.37v15.94zm32.99-16.55c4.49,0,8.06,1.47,10.6,3.86l-2.59,3.81c-2.05-2-5.28-3.08-8.06-3.08-2.88,0-4.84,1.37-4.84,3.32,0,1.91,2.64,2.54,5.81,3.27,4.59,1.08,10.26,2.4,10.26,8.46,0,4.94-3.76,8.41-11.14,8.41-4.98,0-8.94-1.76-11.24-4.11l2.54-4.11c1.86,1.91,5.18,3.67,8.84,3.67,3.91,0,5.57-1.66,5.57-3.62,0-2.3-2.88-2.98-6.21-3.76-4.54-1.08-9.87-2.3-9.87-8.06,0-4.5,4.2-8.06,10.31-8.06zM60.79,20.82,71.44,8.55h6.5L66.46,21.26,78.82,35.44h-6.5l-9.28-11.1-2.25,2.49v8.6h-5.33V8.55h5.33v12.27z" fill="currentColor"/>
+            </svg>
+        </div>
+        <h2>Your saved highlights:</h2>
+        <div id="revisit-highlight"><em>(No highlights yet)</em></div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 18;
+
+        // Correct answers
+        const answers = {
+            q1: `b`,
+            q2: `b`, 
+            q3: `b`,
+            q4: `a`,
+            q5: `a`,
+            q6: `b`,
+            q7: `b`,
+            q8: `b`,
+            q9: `b`,
+            q11: `b`,
+            q12: `b`,
+            q13: `b`,
+            q2a: `b`,
+            q2b: `b`,
+            q2c: `a`,
+            q9a: `b`,
+            q9b: `b`,
+            q9c: `b`,
+            p1: `b`,
+            p2: `a`,
+            p3: `a`
+        };
+
+        // Feedback messages
+        const feedbackMessages = {
+            q1: {
+                correct: `Correct! "renewable energy sources" is specific and uses key terms without unnecessary words.`,
+                incorrect: `Incorrect. Simple, specific keywords work better than full questions or overly broad terms.`
+            },
+            q2: {
+                correct: `Correct! "puppy training techniques" is much more specific than the other options and directly addresses your need.`,
+                incorrect: `Incorrect. The most refined search targets your specific need: puppy training techniques.`
+            },
+            q3: {
+                correct: `Correct! Quotation marks ensure Google searches for this exact phrase in this exact order.`,
+                incorrect: `Incorrect. Use quotation marks around "artificial intelligence in healthcare" to search for the exact phrase.`
+            },
+            q4: {
+                correct: `Correct! This excludes chemical-related results while focusing on the planet Mercury.`,
+                incorrect: `Incorrect. Use the minus sign directly before the word (no space) to exclude unwanted terms.`
+            },
+            q5: {
+                correct: `Correct! This search captures all common regional terms for carbonated beverages.`,
+                incorrect: `Incorrect. Using OR with all regional variations captures the most comprehensive results.`
+            },
+            q6: {
+                correct: `Correct! Educational institutions (.edu) provide credible, academic information about nutrition.`,
+                incorrect: `Incorrect. "site:edu" limits results to educational institutions, which provide the most credible academic sources.`
+            },
+            q7: {
+                correct: `Correct! "filetype:ppt" specifically finds PowerPoint presentations about space exploration.`,
+                incorrect: `Incorrect. Use "filetype:ppt" to find PowerPoint presentations specifically.`
+            },
+            q8: {
+                correct: `Correct! Author expertise and peer-reviewed citations are the strongest indicators of credibility.`,
+                incorrect: `Incorrect. Author credentials and citations are much more important than appearance or length.`
+            },
+            q9: {
+                correct: `Correct! Always verify health information with multiple credible sources including medical experts.`,
+                incorrect: `Incorrect. Relying on blog posts is insufficient for health information as they may lack evidence and often repeat unverified claims - always check multiple credible sources.`
+            },
+            q11: {
+                correct: `Correct! This combines exact phrase searching, site limitation, file type, and exclusion terms effectively.`,
+                incorrect: `Incorrect. The advanced combination uses multiple techniques: quotes, site:edu, filetype:pdf, and minus sign.`
+            },
+            q12: {
+                correct: `Correct! Peer-reviewed studies from academic journals are exactly what Google Scholar is designed to find.`,
+                incorrect: `Incorrect. Google Scholar specialises in academic, peer-reviewed sources rather than popular media.`
+            },
+            q13: {
+                correct: `Correct! AI overviews are helpful starting points, but always verify information with original sources.`,
+                incorrect: `Incorrect. AI answers should be verified with source links and additional reliable sources.`
+            },
+            q2a: {
+                correct: `Correct! Using specific keywords related to your topic is the most effective way to start a Google search.`,
+                incorrect: `Incorrect. Google works best with specific keywords rather than full sentences or single words.`
+            },
+            q2b: {
+                correct: `Correct! Google automatically suggests corrections and shows results for what it thinks you meant to search for.`,
+                incorrect: `Incorrect. Google has built-in spell check and will suggest corrections while still providing relevant results.`
+            },
+            q2c: {
+                correct: `Correct! Adding more specific terms helps narrow down your search results to more relevant and focused information.`,
+                incorrect: `Incorrect. More specific terms help you get better, more targeted results rather than broad, general information.`
+            },
+            q9a: {
+                correct: `Correct! Author expertise and citations are the most reliable indicators of credibility.`,
+                incorrect: `Incorrect. Visual elements and length don't indicate credibility - author credentials and citations do.`
+            },
+            q9b: {
+                correct: `Correct! Recent information ensures you have up-to-date and relevant facts.`,
+                incorrect: `Incorrect. While both recent and outdated information can be problematic, checking currency helps ensure relevance and accuracy.`
+            },
+            q9c: {
+                correct: `Correct! When credible sources disagree, the best approach is to compare them and seek additional evidence.`,
+                incorrect: `Incorrect. Don't ignore good sources or pick randomly - investigate further when credible sources disagree.`
+            },
+            p1: {
+                correct: `Excellent! This paraphrase uses different vocabulary ("has changed" vs "have changed," "communicate" vs "talk," "offering new connections" vs "giving new ways to connect") and restructures the sentence while maintaining the original meaning.`,
+                incorrect: `Not the best choice. A good paraphrase should change both vocabulary and sentence structure significantly while keeping the meaning intact.`
+            },
+            p2: {
+                correct: `Perfect! This paraphrase uses different words ("can be used instead of" vs "take the place of," "help the air stay clean" vs "help keep the air clean") and changes the sentence while keeping the same meaning.`,
+                incorrect: `Not the best choice. A good paraphrase should change the words and structure but keep the meaning the same. This sentence changes the meaning by adding or altering information that is not in the original text.`
+            },
+            p3: {
+                correct: `Great work! This paraphrase uses different words ("a lot" for "often," "your immune system" for "protect you from getting sick," and "your mood" for "feel happier") but the same meaning. It changes the sentence while keeping the same meaning as the original.`,
+                incorrect: `Not the best choice. A correct answer should accurately reflect all key details without introducing mistakes or leaving out important information.`
+            }
+        };
+
+        function showPage(pageNum) {
+            // Hide all pages
+            const pages = document.querySelectorAll(`.page`);
+            pages.forEach(page => page.classList.remove(`active`));
+            
+            // Show selected page
+            document.getElementById(`page${pageNum}`).classList.add(`active`);
+            
+            // Update navigation
+            const buttons = document.querySelectorAll(`.page-btn`);
+            buttons.forEach(btn => btn.classList.remove(`active`));
+            buttons[pageNum - 1].classList.add(`active`);
+            
+            currentPage = pageNum;
+            
+            // Update Previous/Next buttons
+            updateNavigationButtons();
+            
+            // Load notes for this page
+            loadNote(pageNum);
+            
+            // Show restart button only on page 18
+            const restartSection = document.getElementById(`restart-book-section`);
+            if (restartSection) {
+                restartSection.style.display = pageNum === 18 ? `block` : `none`;
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.querySelector(`.nav-btn.prev`);
+            const nextBtn = document.querySelector(`.nav-btn.next`);
+            
+            if (prevBtn) {
+                prevBtn.disabled = currentPage === 1;
+            }
+            
+            if (nextBtn) {
+                // Hide the Next button on page 18
+                if (currentPage === totalPages) {
+                    nextBtn.style.display = `none`;
+                } else {
+                    nextBtn.style.display = `flex`;
+                    nextBtn.disabled = false;
+                    
+                    if (currentPage === 1) {
+                        nextBtn.classList.add(`arrow-only`);
+                        nextBtn.textContent = ``;
+                    } else {
+                        nextBtn.classList.remove(`arrow-only`);
+                        nextBtn.innerHTML = `Next <span style="margin-left: 8px;">→</span>`;
+                    }
+                }
+            }
+        }
+
+        // Restart Book functionality
+        function restartBook() {
+            const restartBtn = document.querySelector(`.restart-book-btn`);
+            
+            if (confirm(`Are you sure you want to restart the entire book? This will:\n\n• Take you back to page 1.\n• Clear all your highlights and saved notes.\n• Reset all quiz answers and activities.\n• Give you a completely fresh start.\n\nThis action cannot be undone.`)) {
+                // Add restarting state
+                restartBtn.classList.add(`restarting`);
+                restartBtn.textContent = `Restarting...`;
+                restartBtn.disabled = true;
+                
+                // Simulate processing time for better UX
+                setTimeout(() => {
+                    // Clear all localStorage data
+                    for (let i = 1; i <= totalPages; i++) {
+                        const storageKey = `research-skills-notes-page-${i}`;
+                        localStorage.removeItem(storageKey);
+                    }
+                    
+                    // Reset all radio buttons
+                    const radioButtons = document.querySelectorAll(`input[type="radio"]`);
+                    radioButtons.forEach(radio => {
+                        radio.checked = false;
+                        const label = radio.parentElement;
+                        label.classList.remove(`correct`, `incorrect`);
+                    });
+                    
+                    // Reset all feedback
+                    const feedbacks = document.querySelectorAll(`.feedback`);
+                    feedbacks.forEach(feedback => {
+                        feedback.style.display = `none`;
+                        feedback.className = `feedback`;
+                        feedback.textContent = ``;
+                    });
+                    
+                    // Reset fill-in-the-blank inputs
+                    const fillBlanks = document.querySelectorAll(`.fill-blank`);
+                    fillBlanks.forEach(blank => blank.value = ``);
+                    
+                    // Reset drag and drop activity
+                    resetDragDrop();
+
+                    // Clear highlights
+                    clearHighlights();
+ 
+                    // Reset all notes textareas
+                    for (let i = 1; i <= totalPages; i++) {
+                        const textarea = document.getElementById(`notes-page-${i}`);
+                        if (textarea) {
+                            textarea.value = ``;
+                            updateWordCount(i);
+                        }
+                        
+                        // Reset notes status
+                        const status = document.getElementById(`notes-status-${i}`);
+                        if (status) {
+                            status.classList.remove(`show`, `success`, `error`);
+                            status.textContent = ``;
+                        }
+                    }
+                    
+                    // Go back to page 1
+                    showPage(1);
+                    
+                    // Show success message
+                    alert(`✅ Book restarted successfully! You're now back at the beginning with a clean slate. Enjoy going through the book again!`);
+                    
+                    // Reset button state
+                    restartBtn.classList.remove(`restarting`);
+                    restartBtn.innerHTML = `Restart Book`;
+                    restartBtn.disabled = false;
+                }, 1500);
+            }
+        }
+
+        // Notes functionality
+        function saveNote(pageNum) {
+            const textarea = document.getElementById(`notes-page-${pageNum}`);
+            const status = document.getElementById(`notes-status-${pageNum}`);
+            const saveBtn = document.querySelector(`button[onclick="saveNote(${pageNum})"]`);
+            const noteText = textarea.value.trim();
+            
+            // Save to localStorage
+            const storageKey = `research-skills-notes-page-${pageNum}`;
+            localStorage.setItem(storageKey, noteText);
+            
+            // Show success message
+            status.textContent = `Note saved successfully!`;
+            status.className = `notes-status success show`;
+            
+            // Disable save button temporarily
+            saveBtn.disabled = true;
+            
+            // Reset status after 2 seconds
+            setTimeout(() => {
+                status.classList.remove(`show`);
+                saveBtn.disabled = false;
+            }, 2000);
+            
+            // Update word count
+            updateWordCount(pageNum);
+        }
+
+        function clearNote(pageNum) {
+            const textarea = document.getElementById(`notes-page-${pageNum}`);
+            const status = document.getElementById(`notes-status-${pageNum}`);
+            
+            if (textarea.value.trim() === ``) {
+                status.textContent = `Note is already empty.`;
+                status.className = `notes-status error show`;
+                setTimeout(() => status.classList.remove(`show`), 2000);
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to clear your notes for this page? This action cannot be undone.`)) {
+                textarea.value = ``;
+                const storageKey = `research-skills-notes-page-${pageNum}`;
+                localStorage.removeItem(storageKey);
+                
+                status.textContent = `Note cleared.`;
+                status.className = `notes-status success show`;
+                setTimeout(() => status.classList.remove(`show`), 2000);
+                
+                updateWordCount(pageNum);
+            }
+        }
+
+        function loadNote(pageNum) {
+            const textarea = document.getElementById(`notes-page-${pageNum}`);
+            const storageKey = `research-skills-notes-page-${pageNum}`;
+            const savedNote = localStorage.getItem(storageKey);
+            
+            if (savedNote) {
+                textarea.value = savedNote;
+            } else {
+                textarea.value = ``;
+            }
+            
+            updateWordCount(pageNum);
+        }
+
+        function updateWordCount(pageNum) {
+            const textarea = document.getElementById(`notes-page-${pageNum}`);
+            const countElement = document.getElementById(`notes-count-${pageNum}`);
+            const text = textarea.value.trim();
+            const wordCount = text === `` ? 0 : text.split(/\s+/).length;
+            countElement.textContent = `${wordCount} words`;
+        }
+
+        // Add event listeners for real-time word count updates
+        document.addEventListener(`DOMContentLoaded`, function() {
+            for (let i = 1; i <= totalPages; i++) {
+                const textarea = document.getElementById(`notes-page-${i}`);
+                if (textarea) {
+                    textarea.addEventListener(`input`, function() {
+                        updateWordCount(i);
+                    });
+                }
+            }
+        });
+
+        // Auto-save functionality (optional)
+        function setupAutoSave() {
+            for (let i = 1; i <= totalPages; i++) {
+                const textarea = document.getElementById(`notes-page-${i}`);
+                if (textarea) {
+                    let autoSaveTimeout;
+                    textarea.addEventListener(`input`, function() {
+                        clearTimeout(autoSaveTimeout);
+                        autoSaveTimeout = setTimeout(() => {
+                            const storageKey = `research-skills-notes-page-${i}`;
+                            localStorage.setItem(storageKey, textarea.value.trim());
+                        }, 2000); // Auto-save after 2 seconds of inactivity
+                    });
+                }
+            }
+        }
+
+        // Handle radio button questions
+        document.addEventListener(`change`, function(e) {
+            if (e.target.type === `radio`) {
+                const questionName = e.target.name;
+                let feedbackId;
+                
+                // Handle different question types
+                if (questionName.startsWith(`p`)) {
+                    feedbackId = `feedback${questionName.toUpperCase()}`;
+                } else if (questionName.startsWith(`q2`)) {
+                    feedbackId = `feedback${questionName}`;
+                } else if (questionName.startsWith(`q9`) && questionName.length > 2) {
+                    feedbackId = `feedback${questionName}`;
+                } else {
+                    feedbackId = `feedback${questionName.slice(1)}`;
+                }
+                
+                const feedbackDiv = document.getElementById(feedbackId);
+                const selectedValue = e.target.value;
+                const correctAnswer = answers[questionName];
+                
+                // Update answer options appearance
+                const options = document.querySelectorAll(`input[name="${questionName}"]`);
+                options.forEach(option => {
+                    const label = option.parentElement;
+                    label.classList.remove(`correct`, `incorrect`);
+                    if (option.value === correctAnswer) {
+                        label.classList.add(`correct`);
+                    } else if (option.checked && option.value !== correctAnswer) {
+                        label.classList.add(`incorrect`);
+                    }
+                });
+                
+                // Show feedback
+                const feedback = feedbackMessages[questionName];
+                if (selectedValue === correctAnswer) {
+                    feedbackDiv.textContent = feedback.correct;
+                    feedbackDiv.className = `feedback correct`;
+                } else {
+                    feedbackDiv.textContent = feedback.incorrect;
+                    feedbackDiv.className = `feedback incorrect`;
+                }
+                feedbackDiv.style.display = `block`;
+            }
+        });
+
+        // Handle fill-in-the-blank question
+        function checkFillBlanks() {
+            const blank1 = document.getElementById(`blank1`).value.toLowerCase().trim();
+            const blank2 = document.getElementById(`blank2`).value.toLowerCase().trim();
+            const feedbackDiv = document.getElementById(`feedback10`);
+            
+            const correct1 = blank1 === `blue` || blank1 === `blue-coloured` || blank1 === `clickable`;
+            const correct2 = blank2 === `snippet` || blank2 === `description` || blank2 === `summary`;
+            
+            if (correct1 && correct2) {
+                feedbackDiv.textContent = `Correct! The blue clickable text is the title, and the snippet provides a brief description.`;
+                feedbackDiv.className = `feedback correct`;
+            } else {
+                let message = `Not quite right. `;
+                if (!correct1) message += `The clickable text is "blue" in colour. `;
+                if (!correct2) message += `The brief description is called a "snippet."`;
+                feedbackDiv.textContent = message;
+                feedbackDiv.className = `feedback incorrect`;
+            }
+            feedbackDiv.style.display = `block`;
+        }
+
+        // Drag and Drop functionality
+let draggedElement = null;
+let originalParent = null;
+
+function setupDragDrop() {
+    const dragItems = document.querySelectorAll('.drag-item');
+    const dropZones = document.querySelectorAll('.drop-zone');
+
+    dragItems.forEach(item => {
+        item.removeEventListener('dragstart', handleDragStart);
+        item.removeEventListener('dragend', handleDragEnd);
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+        if (!item.classList.contains('used')) {
+            item.setAttribute('draggable', 'true');
+        }
+    });
+
+    dropZones.forEach(zone => {
+        zone.removeEventListener('dragover', handleDragOver);
+        zone.removeEventListener('dragenter', handleDragEnter);
+        zone.removeEventListener('dragleave', handleDragLeave);
+        zone.removeEventListener('drop', handleDrop);
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('dragenter', handleDragEnter);
+        zone.addEventListener('dragleave', handleDragLeave);
+        zone.addEventListener('drop', handleDrop);
+    });
+}
+
+function handleDragStart(e) {
+    draggedElement = this;
+    originalParent = this.parentNode;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.getAttribute('data-answer'));
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    draggedElement = null;
+    originalParent = null;
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+}
+
+function handleDragEnter(e) {
+    e.preventDefault();
+    this.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    this.classList.remove('drag-over');
+    if (!draggedElement) return;
+    if (!this.classList.contains('has-answer')) {
+        const answerText = draggedElement.textContent;
+        this.setAttribute('data-dropped-answer', draggedElement.getAttribute('data-answer'));
+        this.textContent = answerText;
+        this.classList.add('has-answer');
+        draggedElement.classList.add('used');
+        draggedElement.setAttribute('draggable', 'false');
+    }
+}
+
+function resetDragDrop() {
+    const dropZones = document.querySelectorAll('.drop-zone');
+    dropZones.forEach(zone => {
+        zone.textContent = 'Drop here';
+        zone.classList.remove('has-answer', 'incorrect', 'drag-over');
+        zone.removeAttribute('data-dropped-answer');
+    });
+    const dragItems = document.querySelectorAll('.drag-item');
+    dragItems.forEach(item => {
+        item.classList.remove('used', 'incorrect', 'dragging');
+        item.setAttribute('draggable', 'true');
+    });
+    let score = document.getElementById('drag-drop-score');
+    if (score) score.style.display = 'none';
+    let feedback = document.getElementById('drag-drop-feedback');
+    if (feedback) feedback.classList.remove('show', 'excellent', 'good', 'needs-improvement');
+}
+
+function checkDragDropAnswers() {
+    const dropZones = document.querySelectorAll('.drop-zone');
+    let correctCount = 0;
+    const total = dropZones.length;
+    dropZones.forEach(zone => {
+        const correct = zone.getAttribute('data-answer');
+        const dropped = zone.getAttribute('data-dropped-answer');
+        if (dropped === correct) {
+            correctCount++;
+            zone.classList.remove('incorrect');
+        } else {
+            zone.classList.add('incorrect');
+            const dragItems = document.querySelectorAll('.drag-item');
+            dragItems.forEach(item => {
+                if (item.getAttribute('data-answer') === dropped) {
+                    item.classList.add('incorrect');
+                }
+            });
+        }
+    });
+    let score = document.getElementById('drag-drop-score');
+    let scoreText = document.getElementById('score-text');
+    if (scoreText) scoreText.textContent = `${correctCount}/${total}`;
+    if (score) score.style.display = 'block';
+    let feedback = document.getElementById('drag-drop-feedback');
+    if (!feedback) return;
+    const percent = (correctCount / total) * 100;
+    if (percent === 100) {
+        feedback.textContent = 'Excellent! You got all questions correct! You have mastered the key concepts of online research skills.';
+        feedback.className = 'activity-feedback excellent show';
+    } else if (percent >= 70) {
+        feedback.textContent = `Good work! You got ${correctCount} out of ${total} correct. Review the concepts you missed and try again.`;
+        feedback.className = 'activity-feedback good show';
+    } else {
+        feedback.textContent = `You got ${correctCount} out of ${total} correct. Consider reviewing the course materials to strengthen your understanding.`;
+        feedback.className = 'activity-feedback needs-improvement show';
+    }
+}
+
+        // Initialize page
+        document.addEventListener(`DOMContentLoaded`, function() {
+            showPage(1);
+            updateNavigationButtons();
+            setupAutoSave();
+            setupDragDrop();
+        });
+
+// SCORM and highlighting scripts
+    var API = null, isScorm = false;
+
+    function findAPI(win) {
+      let tries = 0;
+      while (win && !win.API && win !== window.top) {
+        if (++tries > 7) return null;
+        win = win.parent;
+      }
+      return win.API || null;
+    }
+
+    function getSCORM() {
+      if (API) return API;
+      API = findAPI(window);
+      if (!API && window.opener) API = findAPI(window.opener);
+      isScorm = !!API;
+      return API;
+    }
+
+    function scormInit() {
+      const api = getSCORM();
+      if (!api) return false;
+      api.LMSInitialize('');
+      return true;
+    }
+
+    function scormGet(key) {
+      const api = getSCORM();
+      if (!api) return null;
+      const val = api.LMSGetValue(key);
+      return val === 'null' ? null : val;
+    }
+
+    function scormSet(key, val) {
+      const api = getSCORM();
+      if (!api) return;
+      api.LMSSetValue(key, val);
+      api.LMSCommit('');
+    }
+
+    function scormFinish() {
+      const api = getSCORM();
+      if (!api) return;
+      api.LMSFinish('');
+    }
+
+    function highlightSelection() {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      if (range.collapsed || !range.toString().trim()) return;
+
+      const mark = document.createElement('mark');
+      try {
+        range.surroundContents(mark);
+      } catch(e) {
+        alert('Cannot highlight overlapping selections.');
+        return;
+      }
+      sel.removeAllRanges();
+      saveHighlights();
+    }
+
+    function saveHighlights() {
+      const content = document.getElementById('main-content');
+      if (!content) return;
+      const html = content.innerHTML;
+      if (isScorm) {
+        scormSet('cmi.suspend_data', encodeURIComponent(html));
+      }
+      localStorage.setItem('highlight_html', html);
+      updateHighlightDisplay();
+    }
+
+    function restoreHighlights() {
+      if (isScorm) {
+        const saved = scormGet('cmi.suspend_data');
+        if (saved) {
+          document.getElementById('main-content').innerHTML = decodeURIComponent(saved);
+          updateHighlightDisplay();
+          setupDragDrop();
+          return;
+        }
+      }
+      const localSaved = localStorage.getItem('highlight_html');
+      if (localSaved) {
+        document.getElementById('main-content').innerHTML = localSaved;
+        updateHighlightDisplay();
+        setupDragDrop();
+      }
+    }
+
+    function updateHighlightDisplay() {
+      const content = document.getElementById('main-content');
+      const highlights = content.querySelectorAll('mark');
+      const texts = Array.from(highlights).map(m => m.textContent.trim()).filter(Boolean);
+      const container = document.getElementById('revisit-highlight');
+      if (!container) return;
+      container.innerHTML = texts.length ? '<ul><li>' + texts.join('</li><li>') + '</li></ul>' : '<em>(No highlights yet)</em>';
+    }
+
+    function clearHighlights() {
+      const content = document.getElementById('main-content');
+      if (!content) return;
+      // Remove all <mark> elements by unwrapping their text content
+      const marks = content.querySelectorAll('mark');
+      marks.forEach(mark => {
+      const parent = mark.parentNode;
+      while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+      parent.removeChild(mark);
+  });
+  // Clear saved highlights in SCORM and localStorage
+  if (isScorm) scormSet('cmi.suspend_data', '');
+  localStorage.removeItem('highlight_html');
+  updateHighlightDisplay();
+}
+
+    window.onload = function () {
+      scormInit();
+      restoreHighlights();
+      window.addEventListener('beforeunload', function () {
+        saveHighlights();
+        scormFinish();
+      });
+    };
+  </script>
+  <script src="asset/sdk.prd.js"></script>
+</body>
+</html>
