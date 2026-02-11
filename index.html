@@ -1,27 +1,36 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>My Website</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        audio { margin: 20px 0; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS for responsive design -->
+    <title>RolePlayConvo Application</title>
 </head>
 <body>
-    <h1>Welcome to My Website</h1>
-    <p>This is where I showcase my projects.</p>
-    <audio id="myAudio" controls>
-        <source src="path_to_audio_file.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    <button onclick="pauseAudio()">Pause Audio</button>
-    <script>
-        var audio = document.getElementById('myAudio');
+    <div id="upload-section">
+        <h1>Upload Script</h1>
+        <input type="file" id="script-upload">
+        <div id="script-content"></div>
+    </div>
 
-        function pauseAudio() {
-            if (!audio.paused) {
-                audio.pause();
-            }
-        }
-    </script>
+    <div id="recording-studio">
+        <h1>Recording Studio</h1>
+        <button id="start-recording">Start Recording</button>
+        <button id="stop-recording">Stop Recording</button>
+        <button id="playback">Playback</button>
+        <button id="pause">Pause</button>
+    </div>
+
+    <div id="pronunciation-analysis">
+        <h1>Pronunciation Analysis</h1>
+        <div id="analysis-results"></div>
+    </div>
+
+    <div id="recordings-library">
+        <h1>Recordings Library</h1>
+        <ul id="recordings-list"></ul>
+    </div>
+
+    <script src="script.js"></script> <!-- Link to JavaScript functionality -->
 </body>
 </html>
