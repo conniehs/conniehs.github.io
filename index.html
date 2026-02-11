@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RolePlayConvo: Interactive Conversation Practice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --deep-indigo: #2d1b69;
+            --purple: #5a3f9c;
+            --coral: #ff6b6b;
+            --light-coral: #ff8e8e;
+            --soft-gray: #f5f7fa;
+            --medium-gray: #e0e5ec;
+            --dark-gray: #4a5568;
+            --white: #ffffff;
+            --shadow: 0 4px 12px rgba(45, 27, 105, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--soft-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1, h2, h3 {
+            color: var(--deep-indigo);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--deep-indigo), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--coral);
+            border-radius: 2px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: var(--dark-gray);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 30px;
+            background-color: var(--coral);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background-color: var(--light-coral);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-secondary {
+            background-color: var(--purple);
+        }
+
+        .btn-secondary:hover {
+            background-color: #4a3590;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--deep-indigo);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px rgba(90, 63, 156, 0.1);
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(45, 27, 105, 0.15);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--deep-indigo);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            color: var(--coral);
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--coral);
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--coral);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--deep-indigo);
+            cursor: pointer;
+        }
+
+        /* Homepage Section */
+        #homepage {
+            background: linear-gradient(135deg, var(--deep-indigo) 0%, var(--purple) 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #homepage:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M0,50 Q50,0 100,50 Q50,100 0,50" fill="rgba(255,255,255,0.03)"/></svg>');
+            opacity: 0.3;
+        }
+
+        #homepage h1, #homepage p {
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        #homepage h1 {
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        #homepage p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Script Upload Section */
+        .script-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .script-form .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .script-preview {
+            background-color: var(--soft-gray);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px dashed var(--medium-gray);
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Recording Studio */
+        #recording-studio .card {
+            text-align: center;
+        }
+
+        .recording-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--coral);
+            color: white;
+            border: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+        }
+
+        .mic-button.recording {
+            background-color: #ff3333;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 51, 51, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+        }
+
+        .timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--deep-indigo);
+            margin: 20px 0;
+            font-family: monospace;
+        }
+
+        .waveform-container {
+            height: 120px;
+            width: 100%;
+            background-color: var(--soft-gray);
+            border-radius: 8px;
+            margin: 30px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .waveform {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--purple);
+        }
+
+        .waveform-bar {
+            display: inline-block;
+            width: 4px;
+            margin: 0 2px;
+            background-color: var(--purple);
+            border-radius: 2px;
+            animation: waveform-animation 1.5s infinite ease-in-out;
+        }
+
+        @keyframes waveform-animation {
+            0%, 100% { height: 20px; }
+            50% { height: 60px; }
+        }
+
+        .recording-status {
+            font-size: 1.2rem;
+            color: var(--purple);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Pronunciation Analysis */
+        .analysis-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .score-card {
+            text-align: center;
+            padding: 25px;
+        }
+
+        .score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--coral);
+            line-height: 1;
+            margin: 15px 0;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .incorrect-words {
+            margin-top: 30px;
+        }
+
+        .word-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .word-item {
+            padding: 8px 15px;
+            background-color: var(--soft-gray);
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .word-item:hover {
+            background-color: #ffeaea;
+            border-color: var(--coral);
+            transform: translateY(-3px);
+        }
+
+        /* Recordings Library */
+        .recordings-list {
+            margin-top: 40px;
+        }
+
+        .recording-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .recording-item:last-child {
+            border-bottom: none;
+        }
+
+        .recording-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recording-date {
+            font-weight: 600;
+            color: var(--deep-indigo);
+        }
+
+        .recording-duration {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .recording-score {
+            font-weight: 700;
+            color: var(--coral);
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--deep-indigo);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .script-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .recording-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+            
+            .analysis-results {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            section {
+                padding: 60px 0;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .mic-button {
+                width: 100px;
+                height: 100px;
+                font-size: 2rem;
+            }
+            
+            .timer {
+                font-size: 2rem;
+            }
+            
+            .recording-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Animation for sections */
+        .section-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-comments"></i>
+                RolePlayConvo
+            </div>
+            <div class="nav-links">
+                <a href="#homepage">Home</a>
+                <a href="#script-upload">Script Upload</a>
+                <a href="#recording-studio">Recording Studio</a>
+                <a href="#pronunciation-analysis">Analysis</a>
+                <a href="#recordings-library">Library</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Homepage Section -->
+    <section id="homepage">
+        <div class="container">
+            <h1>Welcome to RolePlayConvo!</h1>
+            <p>Enhance your speaking skills through engaging conversations. Upload your conversation scripts, record your practice sessions, and get instant AI feedback on your pronunciation accuracy.</p>
+            <div class="hero-buttons">
+                <a href="#recording-studio" class="btn">
+                    <i class="fas fa-microphone"></i> Start New Conversation
+                </a>
+                <a href="#recordings-library" class="btn btn-secondary">
+                    <i class="fas fa-folder-open"></i> View My Recordings
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script Upload Section -->
+    <section id="script-upload" class="section-hidden">
+        <div class="container">
+            <h2>Upload Your Conversation Script</h2>
+            <p>Upload a script file or type/paste your conversation script to get started with pronunciation analysis.</p>
+            
+            <div class="card">
+                <form id="scriptForm">
+                    <div class="script-form">
+                        <div class="form-group">
+                            <label for="scriptTitle">Script Title</label>
+                            <input type="text" id="scriptTitle" placeholder="e.g., Restaurant Conversation" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="difficulty">Difficulty Level</label>
+                            <select id="difficulty" required>
+                                <option value="">Select difficulty</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="speakerRoles">Speaker Roles (comma separated)</label>
+                            <input type="text" id="speakerRoles" placeholder="e.g., Student A, Student B" required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="scriptContent">Script Content</label>
+                            <textarea id="scriptContent" placeholder="Type or paste your conversation script here...&#10;&#10;Example:&#10;Student A: Hello, how are you today?&#10;Student B: I'm good, thank you! How about you?&#10;Student A: I'm doing well, thanks for asking." required></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label>Or Upload Script File (.txt)</label>
+                            <input type="file" id="fileUpload" accept=".txt">
+                        </div>
+                    </div>
+                    
+                    <div id="scriptPreview" class="script-preview" style="display: none;">
+                        <h3>Script Preview</h3>
+                        <div id="previewContent"></div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i> Save Script & Continue
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="scriptSuccess" style="display: none; text-align: center; margin-top: 20px; padding: 20px; background-color: #e8f5e9; border-radius: 8px; color: #2e7d32;">
+                    <h3><i class="fas fa-check-circle"></i> Script saved successfully!</h3>
+                    <p>Your script is ready for recording. Proceed to the <a href="#recording-studio" style="color: var(--coral); font-weight: 600;">Recording Studio</a> to start practicing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recording Studio -->
+    <section id="recording-studio" class="section-hidden">
+        <div class="container">
+            <h2>Recording Studio</h2>
+            <p>Record your conversation practice session. Make sure to allow microphone access when prompted.</p>
+            
+            <div class="card">
+                <div class="recording-status" id="recordingStatus">
+                    <i class="fas fa-microphone-alt"></i> Allow microphone access
+                </div>
+                
+                <div class="waveform-container">
+                    <div class="waveform" id="waveform">
+                        <!-- Waveform bars will be generated here -->
+                    </div>
+                </div>
+                
+                <div class="timer" id="timer">00:00</div>
+                
+                <button class="mic-button" id="micButton">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                
+                <div class="recording-controls">
+                    <button class="btn btn-small" id="reRecordBtn" disabled>
+                        <i class="fas fa-redo"></i> Re-record
+                    </button>
+                    <button class="btn btn-small" id="playBtn" disabled>
+                        <i class="fas fa-play"></i> Play
+                    </button>
+                    <button class="btn btn-small" id="downloadBtn" disabled>
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn btn-small" id="analyzeBtn" disabled>
+                        <i class="fas fa-chart-bar"></i> Analyze
+                    </button>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <p><strong>Current Script:</strong> <span id="currentScriptName">None selected</span></p>
+                    <p><strong>Selected Role:</strong> <span id="selectedRole">All roles</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pronunciation Analysis -->
+    <section id="pronunciation-analysis" class="section-hidden">
+        <div class="container">
+            <h2>Pronunciation Analysis</h2>
+            <p>Review your pronunciation accuracy. Click on any highlighted words to hear the correct UK pronunciation.</p>
+            
+            <div class="analysis-results">
+                <div class="card score-card">
+                    <h3>Student A</h3>
+                    <div class="score" id="scoreA">85%</div>
+                    <div class="score-label">Pronunciation Accuracy</div>
+                </div>
+                
+                <div class="card score-card">
+                    <h3>Student B</h3>
+                    <div class="score" id="scoreB">92%</div>
+                    <div class="score-label">Pronunciation Accuracy</div>
+                </div>
+                
+                <div class="card score-card">
+                    <h3>Combined</h3>
+                    <div class="score" id="scoreCombined">88.5%</div>
+                    <div class="score-label">Overall Accuracy</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Incorrectly Pronounced Words</h3>
+                <p>Click on any word to hear the correct UK pronunciation:</p>
+                
+                <div class="incorrect-words">
+                    <h4>Student A</h4>
+                    <div class="word-list" id="incorrectWordsA">
+                        <!-- Incorrect words will appear here -->
+                    </div>
+                </div>
+                
+                <div class="incorrect-words" style="margin-top: 30px;">
+                    <h4>Student B</h4>
+                    <div class="word-list" id="incorrectWordsB">
+                        <!-- Incorrect words will appear here -->
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--medium-gray);">
+                    <h4>Script Comparison</h4>
+                    <div id="scriptComparison" style="background-color: var(--soft-gray); padding: 20px; border-radius: 8px; margin-top: 15px;">
+                        <p>Your recording will be compared with the saved script here. Words with pronunciation issues will be highlighted.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recordings Library -->
+    <section id="recordings-library" class="section-hidden">
+        <div class="container">
+            <h2>My Recordings Library</h2>
+            <p>Review and manage your past recording sessions. All data is saved locally in your browser.</p>
+            
+            <div class="card">
+                <div class="recordings-list" id="recordingsList">
+                    <!-- Recording items will be generated here -->
+                    <div class="recording-item">
+                        <div class="recording-info">
+                            <div class="recording-date">Restaurant Conversation</div>
+                            <div class="recording-duration">Date: 2023-10-15 | Duration: 01:45</div>
+                        </div>
+                        <div class="recording-score">A: 85%</div>
+                        <div class="recording-score">B: 92%</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-small">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-chart-bar"></i>
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="recording-item">
+                        <div class="recording-info">
+                            <div class="recording-date">Job Interview Practice</div>
+                            <div class="recording-duration">Date: 2023-10-10 | Duration: 02:30</div>
+                        </div>
+                        <div class="recording-score">A: 78%</div>
+                        <div class="recording-score">B: 81%</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-small">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-chart-bar"></i>
+                            </button>
+                            <button class="btn btn-small">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" id="clearAllBtn">
+                        <i class="fas fa-trash-alt"></i> Clear All Recordings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-comments"></i>
+                RolePlayConvo
+            </div>
+            <p>Interactive Conversation Practice Platform &copy; 2023</p>
+            <p>Practice makes perfect! Keep recording and improving your pronunciation skills.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+        const sections = document.querySelectorAll('section');
+        const scriptForm = document.getElementById('scriptForm');
+        const scriptSuccess = document.getElementById('scriptSuccess');
+        const fileUpload = document.getElementById('fileUpload');
+        const scriptContent = document.getElementById('scriptContent');
+        const previewContent = document.getElementById('previewContent');
+        const scriptPreview = document.getElementById('scriptPreview');
+        const micButton = document.getElementById('micButton');
+        const recordingStatus = document.getElementById('recordingStatus');
+        const timer = document.getElementById('timer');
+        const reRecordBtn = document.getElementById('reRecordBtn');
+        const playBtn = document.getElementById('playBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const waveform = document.getElementById('waveform');
+        const currentScriptName = document.getElementById('currentScriptName');
+        const selectedRole = document.getElementById('selectedRole');
+        const recordingsList = document.getElementById('recordingsList');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const scoreA = document.getElementById('scoreA');
+        const scoreB = document.getElementById('scoreB');
+        const scoreCombined = document.getElementById('scoreCombined');
+        const incorrectWordsA = document.getElementById('incorrectWordsA');
+        const incorrectWordsB = document.getElementById('incorrectWordsB');
+        const scriptComparison = document.getElementById('scriptComparison');
+
+        // State variables
+        let isRecording = false;
+        let isPlaying = false;
+        let mediaRecorder;
+        let audioChunks = [];
+        let timerInterval;
+        let seconds = 0;
+        let currentAudioBlob;
+        let currentRecording = null;
+        let savedScript = null;
+        let recordings = [];
+        
+        // Sample recordings for demo
+        const sampleRecordings = [
+            {
+                id: 1,
+                title: "Restaurant Conversation",
+                date: "2023-10-15",
+                duration: "01:45",
+                scoreA: 85,
+                scoreB: 92
+            },
+            {
+                id: 2,
+                title: "Job Interview Practice",
+                date: "2023-10-10",
+                duration: "02:30",
+                scoreA: 78,
+                scoreB: 81
+            }
+        ];
+
+        // Initialize the app
+        function init() {
+            // Load recordings from localStorage
+            loadRecordings();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Initialize sections visibility
+            setupIntersectionObserver();
+            
+            // Generate waveform visualization
+            generateWaveform();
+            
+            // Set up TTS (Text-to-Speech) for pronunciation
+            setupTTS();
+            
+            // Update UI with sample data
+            updateAnalysisUI();
+            updateRecordingsList();
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Close mobile menu when clicking a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
+            
+            // Script form submission
+            scriptForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveScript();
+            });
+            
+            // File upload for scripts
+            fileUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file && file.type === 'text/plain') {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        scriptContent.value = e.target.result;
+                        updateScriptPreview();
+                    };
+                    reader.readAsText(file);
+                } else {
+                    alert('Please upload a valid .txt file');
+                }
+            });
+            
+            // Script content preview
+            scriptContent.addEventListener('input', updateScriptPreview);
+            
+            // Microphone button for recording
+            micButton.addEventListener('click', toggleRecording);
+            
+            // Recording control buttons
+            reRecordBtn.addEventListener('click', resetRecording);
+            playBtn.addEventListener('click', togglePlayback);
+            downloadBtn.addEventListener('click', downloadRecording);
+            analyzeBtn.addEventListener('click', analyzePronunciation);
+            
+            // Clear all recordings
+            clearAllBtn.addEventListener('click', clearAllRecordings);
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Intersection Observer for section animations
+        function setupIntersectionObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('section-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                if (section.id !== 'homepage') {
+                    observer.observe(section);
+                }
+            });
+        }
+
+        // Generate waveform visualization
+        function generateWaveform() {
+            waveform.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'waveform-bar';
+                bar.style.height = `${Math.random() * 60 + 20}px`;
+                bar.style.animationDelay = `${i * 0.05}s`;
+                waveform.appendChild(bar);
+            }
+        }
+
+        // Update script preview
+        function updateScriptPreview() {
+            if (scriptContent.value.trim()) {
+                previewContent.textContent = scriptContent.value;
+                scriptPreview.style.display = 'block';
+            } else {
+                scriptPreview.style.display = 'none';
+            }
+        }
+
+        // Save script
+        function saveScript() {
+            const scriptTitle = document.getElementById('scriptTitle').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const speakerRoles = document.getElementById('speakerRoles').value;
+            const content = scriptContent.value;
+            
+            savedScript = {
+                title: scriptTitle,
+                difficulty: difficulty,
+                roles: speakerRoles.split(',').map(role => role.trim()),
+                content: content,
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            // Update UI
+            currentScriptName.textContent = scriptTitle;
+            selectedRole.textContent = savedScript.roles.join(', ');
+            
+            // Show success message
+            scriptSuccess.style.display = 'block';
+            scriptForm.reset();
+            scriptPreview.style.display = 'none';
+            
+            // Scroll to recording studio
+            setTimeout(() => {
+                document.querySelector('#recording-studio').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 500);
+            
+            // Update script comparison preview
+            updateScriptComparison();
+        }
+
+        // Toggle recording
+        async function toggleRecording() {
+            if (!isRecording) {
+                // Start recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        currentAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        enableRecordingControls();
+                        recordingStatus.innerHTML = '<i class="fas fa-check-circle"></i> Recording complete! Ready for analysis.';
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecording = true;
+                    micButton.classList.add('recording');
+                    micButton.innerHTML = '<i class="fas fa-stop"></i>';
+                    recordingStatus.innerHTML = '<i class="fas fa-circle"></i> Recording: <span id="timerDisplay">[00:00]</span>';
+                    
+                    // Start timer
+                    startTimer();
+                    
+                    // Enable re-record button
+                    reRecordBtn.disabled = false;
+                } catch (error) {
+                    console.error('Error accessing microphone:', error);
+                    recordingStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Microphone access denied. Please allow microphone access.';
+                }
+            } else {
+                // Stop recording
+                mediaRecorder.stop();
+                isRecording = false;
+                micButton.classList.remove('recording');
+                micButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                stopTimer();
+                
+                // Stop all tracks
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        // Timer functions
+        function startTimer() {
+            seconds = 0;
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                timer.textContent = `${mins}:${secs}`;
+                
+                // Update status display
+                const timerDisplay = document.getElementById('timerDisplay');
+                if (timerDisplay) {
+                    timerDisplay.textContent = `[${mins}:${secs}]`;
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // Enable recording controls after recording
+        function enableRecordingControls() {
+            playBtn.disabled = false;
+            downloadBtn.disabled = false;
+            analyzeBtn.disabled = false;
+        }
+
+        // Reset recording
+        function resetRecording() {
+            audioChunks = [];
+            currentAudioBlob = null;
+            playBtn.disabled = true;
+            downloadBtn.disabled = true;
+            analyzeBtn.disabled = true;
+            reRecordBtn.disabled = true;
+            timer.textContent = '00:00';
+            recordingStatus.innerHTML = '<i class="fas fa-microphone-alt"></i> Ready to record!';
+            generateWaveform();
+        }
+
+        // Toggle playback
+        function togglePlayback() {
+            if (!currentAudioBlob) return;
+            
+            if (!isPlaying) {
+                const audioUrl = URL.createObjectURL(currentAudioBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+                isPlaying = true;
+                playBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                
+                audio.onended = () => {
+                    isPlaying = false;
+                    playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                };
+            }
+        }
+
+        // Download recording
+        function downloadRecording() {
+            if (!currentAudioBlob) return;
+            
+            const url = URL.createObjectURL(currentAudioBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `recording-${new Date().getTime()}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Analyze pronunciation (simulated for demo)
+        function analyzePronunciation() {
+            if (!currentAudioBlob || !savedScript) {
+                alert('Please record audio and save a script first.');
+                return;
+            }
+            
+            // Create a new recording object
+            const recordingId = Date.now();
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            
+            currentRecording = {
+                id: recordingId,
+                title: savedScript.title || 'Untitled',
+                date: new Date().toISOString().split('T')[0],
+                duration: `${mins}:${secs}`,
+                scoreA: Math.floor(Math.random() * 20) + 75, // Random score for demo
+                scoreB: Math.floor(Math.random() * 20) + 75  // Random score for demo
+            };
+            
+            // Add to recordings array
+            recordings.unshift(currentRecording);
+            
+            // Save to localStorage
+            saveRecordings();
+            
+            // Update UI
+            updateAnalysisUI();
+            updateRecordingsList();
+            
+            // Scroll to analysis section
+            setTimeout(() => {
+                document.querySelector('#pronunciation-analysis').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 300);
+        }
+
+        // Update analysis UI with sample data
+        function updateAnalysisUI() {
+            // Generate random scores for demo
+            const scoreAValue = Math.floor(Math.random() * 20) + 75;
+            const scoreBValue = Math.floor(Math.random() * 20) + 75;
+            const combinedScore = ((scoreAValue + scoreBValue) / 2).toFixed(1);
+            
+            scoreA.textContent = `${scoreAValue}%`;
+            scoreB.textContent = `${scoreBValue}%`;
+            scoreCombined.textContent = `${combinedScore}%`;
+            
+            // Generate sample incorrect words
+            const sampleWordsA = ['restaurant', 'delicious', 'vegetarian', 'appetizer', 'beverage'];
+            const sampleWordsB = ['recommendation', 'ingredients', 'cuisine', 'dessert', 'atmosphere'];
+            
+            // Clear previous words
+            incorrectWordsA.innerHTML = '';
+            incorrectWordsB.innerHTML = '';
+            
+            // Add words with click event for TTS
+            sampleWordsA.forEach(word => {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'word-item';
+                wordElement.textContent = word;
+                wordElement.addEventListener('click', () => speakWord(word));
+                incorrectWordsA.appendChild(wordElement);
+            });
+            
+            sampleWordsB.forEach(word => {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'word-item';
+                wordElement.textContent = word;
+                wordElement.addEventListener('click', () => speakWord(word));
+                incorrectWordsB.appendChild(wordElement);
+            });
+        }
+
+        // Update script comparison preview
+        function updateScriptComparison() {
+            if (!savedScript) return;
+            
+            // Simple script display with highlighting for demo
+            const lines = savedScript.content.split('\n');
+            let highlightedScript = '';
+            
+            lines.forEach(line => {
+                if (line.trim()) {
+                    // Highlight some words for demo
+                  let highlightedLine = line;
+                  const wordsToHighlight = ['Hello', 'restaurant', 'delicious', 'recommendation'];
+                  
+                  wordsToHighlight.forEach(word => {
+                      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                      highlightedLine = highlightedLine.replace(regex, `<span class="word-item" style="display: inline-block; margin: 2px 4px 2px 0;">${word}</span>`);
+                  });
+                  
+                  highlightedScript += `<p>${highlightedLine}</p>`;
+                }
+            });
+            
+            scriptComparison.innerHTML = highlightedScript;
+            
+            // Add click event to highlighted words
+            scriptComparison.querySelectorAll('.word-item').forEach(wordElement => {
+                wordElement.addEventListener('click', () => speakWord(wordElement.textContent));
+            });
+        }
+
+        // Setup Text-to-Speech
+        function setupTTS() {
+            // Check browser support
+            if (!('speechSynthesis' in window)) {
+                console.warn('Text-to-speech not supported in this browser');
+            }
+        }
+
+        // Speak a word using TTS with UK accent
+        function speakWord(word) {
+            if (!('speechSynthesis' in window)) {
+                alert('Text-to-speech is not supported in your browser. Try Chrome or Edge.');
+                return;
+            }
+            
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+            
+            // Create utterance
+            const utterance = new SpeechSynthesisUtterance(word);
+            
+            // Try to set a UK English voice
+            const voices = speechSynthesis.getVoices();
+            const ukVoice = voices.find(voice => 
+                voice.lang.includes('en-GB') || voice.lang.includes('en-UK')
+            );
+            
+            if (ukVoice) {
+                utterance.voice = ukVoice;
+            } else {
+                // Fallback to any English voice
+                const englishVoice = voices.find(voice => voice.lang.includes('en'));
+                if (englishVoice) utterance.voice = englishVoice;
+            }
+            
+            // Set properties
+            utterance.rate = 0.8; // Slower for clarity
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            
+            // Speak
+            speechSynthesis.speak(utterance);
+        }
+
+        // Load recordings from localStorage
+        function loadRecordings() {
+            const saved = localStorage.getItem('rolePlayConvoRecordings');
+            if (saved) {
+                recordings = JSON.parse(saved);
+            } else {
+                // Use sample recordings for demo
+                recordings = [...sampleRecordings];
+            }
+        }
+
+        // Save recordings to localStorage
+        function saveRecordings() {
+            localStorage.setItem('rolePlayConvoRecordings', JSON.stringify(recordings));
+        }
+
+        // Update recordings list
+        function updateRecordingsList() {
+            recordingsList.innerHTML = '';
+            
+            if (recordings.length === 0) {
+                recordingsList.innerHTML = '<p style="text-align: center; padding: 30px; color: var(--dark-gray);">No recordings yet. Start by recording a conversation!</p>';
+                return;
+            }
+            
+            recordings.forEach(recording => {
+                const recordingElement = document.createElement('div');
+                recordingElement.className = 'recording-item';
+                
+                recordingElement.innerHTML = `
+                    <div class="recording-info">
+                        <div class="recording-date">${recording.title}</div>
+                        <div class="recording-duration">Date: ${recording.date} | Duration: ${recording.duration}</div>
+                    </div>
+                    <div class="recording-score">A: ${recording.scoreA}%</div>
+                    <div class="recording-score">B: ${recording.scoreB}%</div>
+                    <div class="action-buttons">
+                        <button class="btn btn-small play-btn" data-id="${recording.id}">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="btn btn-small analyze-btn" data-id="${recording.id}">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button class="btn btn-small delete-btn" data-id="${recording.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                recordingsList.appendChild(recordingElement);
+            });
+            
+            // Add event listeners to buttons
+            document.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                    playRecording(id);
+                });
+            });
+            
+            document.querySelectorAll('.analyze-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                    loadRecordingForAnalysis(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                    deleteRecording(id);
+                });
+            });
+        }
+
+        // Play a recording (simulated for demo)
+        function playRecording(id) {
+            const recording = recordings.find(r => r.id === id);
+            if (recording) {
+                alert(`Playing recording: ${recording.title}\nThis is a demo - in a real app, the audio would play.`);
+            }
+        }
+
+        // Load recording for analysis
+        function loadRecordingForAnalysis(id) {
+            const recording = recordings.find(r => r.id === id);
+            if (recording) {
+                // Update analysis UI with this recording's data
+                scoreA.textContent = `${recording.scoreA}%`;
+                scoreB.textContent = `${recording.scoreB}%`;
+                scoreCombined.textContent = `${((recording.scoreA + recording.scoreB) / 2).toFixed(1)}%`;
+                
+                // Scroll to analysis section
+                setTimeout(() => {
+                    document.querySelector('#pronunciation-analysis').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 300);
+            }
+        }
+
+        // Delete a recording
+        function deleteRecording(id) {
+            if (confirm('Are you sure you want to delete this recording?')) {
+                recordings = recordings.filter(r => r.id !== id);
+                saveRecordings();
+                updateRecordingsList();
+            }
+        }
+
+        // Clear all recordings
+        function clearAllRecordings() {
+            if (recordings.length === 0) {
+                alert('No recordings to clear.');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete ALL recordings? This cannot be undone.')) {
+                recordings = [];
+                saveRecordings();
+                updateRecordingsList();
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
